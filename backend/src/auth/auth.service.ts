@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -15,7 +16,7 @@ import { RegisterDto } from './dto/Register.dto';
 import { VerifyOtpDto } from 'src/otp/dto/verifyOtp.dto';
 import { LoginDto } from './dto/login.dto';
 
-
+import { Request } from 'express';
 
 
 @Injectable()
@@ -230,5 +231,56 @@ async login(loginDto: LoginDto) {
   };
 }
 
+async refresh(req: Request) {
+
+const refreshToken = req.cookies.refreshToken;
+if (!refreshToken) {
+  throw new UnauthorizedException(
+    'Refresh token not found',
+  );
+}
+
+let payload;
+try {
+  payload = await this.jwtService.verifyAsync(
+    refreshToken,
+    {
+      secret: process.env.JWT_REFRESH_SECRET,
+    },
+  );
+} catch {
+  throw new UnauthorizedException(
+    'Invalid or expired refresh token',
+  );
+}
+
+
+
+
+const user = await this.userRepository.findOne({
+  where: {
+    id: payload.sub,
+  },
+});
+if (!user) {
+  throw new UnauthorizedException('User not found');
+}
+
+const isMatched = await bcrypt.compare(
+  refreshToken,
+  user.refreshToken,
+);
+
+if (!isMatched) {
+  throw new UnauthorizedException(
+    'Invalid refresh token',
+  );
+}
+const accessToken =
+await this.generateAccessToken(user);
+return {
+   accessToken
+}
+}
 
 }
