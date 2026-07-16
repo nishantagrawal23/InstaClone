@@ -16,7 +16,7 @@ export class MailService {
     });
   }
 
-  async sendOtpEmail(email: string, otp: string): Promise<void> {
+  async sendOtpEmail(email: string, otp: string) {
     await this.transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: email,

@@ -8,6 +8,8 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { MailModule } from './mail/mail.module';
 import { OtpModule } from './otp/otp.module';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { PostModule } from './post/post.module';
 
 
 @Module({
@@ -38,6 +40,10 @@ import { OtpModule } from './otp/otp.module';
     MailModule,
 
     OtpModule,
+
+    CloudinaryModule,
+
+    PostModule,
   ],
   controllers: [AppController],
   providers: [AppService],

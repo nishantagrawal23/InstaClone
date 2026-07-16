@@ -1,7 +1,9 @@
+import { PostEntity } from 'src/post/entities/post.entitiy';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -27,6 +29,15 @@ export class UserEntity {
   @Column({ default: false })
   isVerified!: boolean;
 
+
+
+  @OneToMany(
+  () => PostEntity,
+  (post) => post.user,
+    )
+   posts!: PostEntity[];
+
+   
   @CreateDateColumn()
   createdAt!: Date;
 

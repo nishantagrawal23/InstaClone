@@ -92,7 +92,7 @@ private readonly mailService: MailService,
     };
   }
 
-  // ================= VERIFY OTP =================
+  // VERIFY OTP ke liye 
 
   async verifyOtp(verifyOtpDto: VerifyOtpDto) {
     const { email, otp } = verifyOtpDto;
