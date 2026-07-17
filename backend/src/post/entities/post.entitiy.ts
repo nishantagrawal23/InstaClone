@@ -15,11 +15,13 @@ export class PostEntity {
   })
   caption!: string;
 
-  @Column('text',{array:true,
-    nullable: true,
-  })
-  imageUrl!: string[];
-
+@Column({
+  type: 'jsonb',
+})
+images!: {
+  url: string;
+  publicId: string;
+}[];
   @ManyToOne(
   () => UserEntity,
   (user) => user.posts,

@@ -1,8 +1,7 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException,ForbiddenException} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Express } from 'express';
-
 
 import { PostEntity } from './entities/post.entitiy';
 import { UserEntity } from 'src/user/entities/user.entity';
@@ -35,24 +34,59 @@ export class PostService {
       throw new NotFoundException('User not found');
     }
 
+   
     // 2. Upload all images to Cloudinary
-    const imageUrls: string[] = [];
+const images: { url: string; publicId: string }[] = [];
 
-    for (const file of files) {
-      const uploadedImage =
-        await this.cloudinaryService.uploadImage(file);
+for (const file of files) {
+  const uploadedImage =
+    await this.cloudinaryService.uploadImage(file);
 
-      imageUrls.push(uploadedImage.secure_url);
-    }
+  images.push({
+    url: uploadedImage.secure_url,
+    publicId: uploadedImage.public_id,
+  });
+}
 
     // 3. Create post
     const post = this.postRepository.create({
       caption: createPostDto.caption,
-      imageUrl: imageUrls,
+      images,
       user,
     });
 
     // 4. Save post
     return await this.postRepository.save(post);
   }
+
+  async delete(postId: string, userId: string) {
+  // Find Post
+  const post = await this.postRepository.findOne({
+    where: { id: postId },
+    relations: {user:true},
+  });
+
+  if (!post) {
+    throw new NotFoundException('Post not found');
+  }
+
+  // Check Ownership
+  if (post.user.id !== userId) {
+    throw new ForbiddenException(
+      'You can delete only your own posts',
+    );
+  }
+
+  // Delete Images from Cloudinary
+  for (const image of post.images) {
+    await this.cloudinaryService.deleteImage(image.publicId);
+  }
+
+  // Delete Post from Database
+  await this.postRepository.remove(post);
+
+  return {
+    message: 'Post deleted successfully',
+  };
+}
 }
