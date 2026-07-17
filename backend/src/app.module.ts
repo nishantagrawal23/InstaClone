@@ -10,6 +10,7 @@ import { MailModule } from './mail/mail.module';
 import { OtpModule } from './otp/otp.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { PostModule } from './post/post.module';
+import { FollowModule } from './follow/follow.module';
 
 
 @Module({
@@ -44,6 +45,8 @@ import { PostModule } from './post/post.module';
     CloudinaryModule,
 
     PostModule,
+
+    FollowModule,
   ],
   controllers: [AppController],
   providers: [AppService],

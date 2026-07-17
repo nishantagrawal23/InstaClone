@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { FollowEntity } from 'src/follow/entities/follow.entity';
 
 @Entity('users')
 export class UserEntity {
@@ -19,7 +20,7 @@ export class UserEntity {
 
   @Column({ unique: true })
   username!: string;
- 
+
   @Column({ unique: true })
   email!: string;
 
@@ -32,22 +33,28 @@ export class UserEntity {
 
 
   @OneToMany(
-  () => PostEntity,
-  (post) => post.user,
-    )
-   posts!: PostEntity[];
+    () => PostEntity,
+    (post) => post.user,
+  )
+  posts!: PostEntity[];
 
-   
+
   @CreateDateColumn()
   createdAt!: Date;
 
   @UpdateDateColumn()
   updatedAt!: Date;
-  
-@Column({
-  nullable: true,
-})
-refreshToken!: string;
+
+  @Column({
+    nullable: true,
+  })
+  refreshToken!: string;
 
 
+  // ye ho gya apna follower relaton
+@OneToMany(() => FollowEntity, (follow) => follow.following)
+followers: FollowEntity[];
+
+@OneToMany(() => FollowEntity, (follow) => follow.follower)
+following: FollowEntity[];
 }
