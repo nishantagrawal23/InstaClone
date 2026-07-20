@@ -21,7 +21,8 @@ export class PostController {
 createPost(
   @UploadedFiles() files: Express.Multer.File[],
   @Body() createPostDto: CreatePostDto,@Req() req:Request
-) {
+) {  
+
   const user=req.user as any
   return this.postservice.create(createPostDto, files,user.id);
 }

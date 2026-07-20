@@ -203,9 +203,11 @@ export class AuthService {
       );
     }
 
-    // 4. Generate Tokens
+    // 4. Generate access Tokens calll kr diyaa
     const accessToken = await this.generateAccessToken(user);
-
+   
+    // generate refresh token call krr diya 
+  
     const refreshToken = await this.generateRefreshToken(user);
 
     // 5. Hash Refresh Token

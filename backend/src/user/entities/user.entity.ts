@@ -3,11 +3,13 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { FollowEntity } from 'src/follow/entities/follow.entity';
+import { LikeEntity } from 'src/like/entity/like.entity';
 
 @Entity('users')
 export class UserEntity {
@@ -30,7 +32,7 @@ export class UserEntity {
   @Column({ default: false })
   isVerified!: boolean;
 
-
+// this is for posts 
 
   @OneToMany(
     () => PostEntity,
@@ -53,8 +55,12 @@ export class UserEntity {
 
   // ye ho gya apna follower relaton
 @OneToMany(() => FollowEntity, (follow) => follow.following)
-followers: FollowEntity[];
+followers!: FollowEntity[];
 
 @OneToMany(() => FollowEntity, (follow) => follow.follower)
-following: FollowEntity[];
+following!: FollowEntity[];
+
+
+@OneToMany(() => LikeEntity, (like) => like.user)
+likes!: LikeEntity[];
 }

@@ -11,6 +11,8 @@ import { OtpModule } from './otp/otp.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { PostModule } from './post/post.module';
 import { FollowModule } from './follow/follow.module';
+import { LikeModule } from './like/like.module';
+import { CommentModule } from './comment/comment.module';
 
 
 @Module({
@@ -47,6 +49,10 @@ import { FollowModule } from './follow/follow.module';
     PostModule,
 
     FollowModule,
+
+    LikeModule,
+
+    CommentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

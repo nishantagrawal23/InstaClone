@@ -13,6 +13,7 @@ export class UserController {
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.createUser(createUserDto);
   }
+
   @UseGuards(JwtGaurd)
   @Get('getall')
   findAll() {
@@ -25,7 +26,6 @@ export class UserController {
     return this.userService.findOne(user.id);
   }
 
-  
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(id, updateUserDto);

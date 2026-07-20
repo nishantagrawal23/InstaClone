@@ -9,7 +9,7 @@ export class FollowController {
         private readonly followservice:FollowService
     ){}
 
-   @Post(':userId')
+@Post(':userId')
 @UseGuards(JwtGaurd)
 followUser(
   @Req() req,

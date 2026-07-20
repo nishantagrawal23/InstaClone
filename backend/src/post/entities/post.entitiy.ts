@@ -1,3 +1,4 @@
+import { LikeEntity } from "src/like/entity/like.entity";
 import { UserEntity } from "src/user/entities/user.entity";
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
@@ -28,9 +29,11 @@ images!: {
 )
    user!: UserEntity;
 
+@OneToMany(() => LikeEntity, (like) => like.post)
+likes!: LikeEntity[];
 
   @CreateDateColumn()
-  createdAt!: Date;
+  createdAt!: Date
 
   @UpdateDateColumn()
   updatedAt!: Date;
