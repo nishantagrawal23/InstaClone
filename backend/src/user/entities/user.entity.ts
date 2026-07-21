@@ -1,4 +1,4 @@
-import { PostEntity } from 'src/post/entities/post.entitiy';
+import { PostEntity } from 'src/post/entities/post.entity';
 import {
   Column,
   CreateDateColumn,
@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { FollowEntity } from 'src/follow/entities/follow.entity';
 import { LikeEntity } from 'src/like/entity/like.entity';
+import { CommentEntity } from 'src/comment/entity/comment.entity';
 
 @Entity('users')
 export class UserEntity {
@@ -60,7 +61,12 @@ followers!: FollowEntity[];
 @OneToMany(() => FollowEntity, (follow) => follow.follower)
 following!: FollowEntity[];
 
-
+// for like 
 @OneToMany(() => LikeEntity, (like) => like.user)
 likes!: LikeEntity[];
+
+// for comment 
+
+@OneToMany(() => CommentEntity, (comment) => comment.user)
+comments!: CommentEntity[];
 }

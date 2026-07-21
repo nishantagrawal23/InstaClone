@@ -6,7 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { LikeEntity } from './entity/like.entity';
-import { PostEntity } from 'src/post/entities/post.entitiy';
+import { PostEntity } from 'src/post/entities/post.entity';
 
 @Injectable()
 export class LikeService {

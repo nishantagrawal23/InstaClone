@@ -1,3 +1,4 @@
+import { CommentEntity } from "src/comment/entity/comment.entity";
 import { LikeEntity } from "src/like/entity/like.entity";
 import { UserEntity } from "src/user/entities/user.entity";
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
@@ -38,6 +39,8 @@ likes!: LikeEntity[];
   @UpdateDateColumn()
   updatedAt!: Date;
 
+  @OneToMany(() => CommentEntity, (comment) => comment.post)
+comments!: CommentEntity[];
   
 
 }

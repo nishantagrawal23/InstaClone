@@ -1,4 +1,4 @@
-import { PostEntity } from "src/post/entities/post.entitiy";
+import { PostEntity } from "src/post/entities/post.entity";
 import { UserEntity } from "src/user/entities/user.entity";
 import { CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, Unique } from "typeorm";
 

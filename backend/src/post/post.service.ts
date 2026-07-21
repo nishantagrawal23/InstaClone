@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Express } from 'express';
 
-import { PostEntity } from './entities/post.entitiy';
+import { PostEntity } from './entities/post.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { CreatePostDto } from './dto/createPost.dto';
