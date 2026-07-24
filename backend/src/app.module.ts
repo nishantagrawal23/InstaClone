@@ -13,6 +13,7 @@ import { PostModule } from './post/post.module';
 import { FollowModule } from './follow/follow.module';
 import { LikeModule } from './like/like.module';
 import { CommentModule } from './comment/comment.module';
+import { ChatModule } from './chat/chat.module';
 
 
 @Module({
@@ -53,6 +54,8 @@ import { CommentModule } from './comment/comment.module';
     LikeModule,
 
     CommentModule,
+
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [AppService],

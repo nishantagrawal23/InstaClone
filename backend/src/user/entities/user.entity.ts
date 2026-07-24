@@ -11,6 +11,8 @@ import {
 import { FollowEntity } from 'src/follow/entities/follow.entity';
 import { LikeEntity } from 'src/like/entity/like.entity';
 import { CommentEntity } from 'src/comment/entity/comment.entity';
+import { ConversationMemberEntity } from 'src/chat/entity/conversation-member.entity';
+import { MessageEntity } from 'src/chat/entity/message.entity';
 
 @Entity('users')
 export class UserEntity {
@@ -69,4 +71,16 @@ likes!: LikeEntity[];
 
 @OneToMany(() => CommentEntity, (comment) => comment.user)
 comments!: CommentEntity[];
+
+@OneToMany(
+  () => ConversationMemberEntity,
+  (member) => member.user,
+)
+conversations!: ConversationMemberEntity[];
+
+@OneToMany(
+  () => MessageEntity,
+  (message) => message.sender,
+)
+messages!: MessageEntity[];
 }
