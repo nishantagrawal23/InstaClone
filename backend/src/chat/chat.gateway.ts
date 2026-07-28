@@ -1,4 +1,3 @@
-
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import {
@@ -14,24 +13,17 @@ import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
 import { SendMessageDto } from './dto/send-message.dto';
 
-
-
-
 @WebSocketGateway({
   cors: {
     origin: '*',
   },
 })
-
 @Injectable()
-export class ChatGateway
-  implements OnGatewayConnection, OnGatewayDisconnect {
+export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(
     private readonly jwtService: JwtService,
     private readonly chatService: ChatService,
-  ) {
-
-  }
+  ) {}
 
   @WebSocketServer()
   server!: Server;
@@ -39,7 +31,6 @@ export class ChatGateway
   private onlineUsers = new Map<string, Set<string>>();
 
   handleConnection(client: Socket) {
-  
     try {
       const token = client.handshake.headers.auth as string;
 
@@ -51,10 +42,9 @@ export class ChatGateway
         secret: `${process.env.JWT_ACCESS_SECRET}`,
       });
 
-      // Without storing userId in client.data, handleMessage() won't know which authenticated 
+      // Without storing userId in client.data, handleMessage() won't know which authenticated
       // user sent the message.
       client.data.userId = payload.id;
-
 
       const userId = payload.id;
 
@@ -63,16 +53,12 @@ export class ChatGateway
       }
 
       this.onlineUsers.get(userId)?.add(client.id);
-
-
     } catch (error) {
       console.error(error);
-
     }
   }
 
   handleDisconnect(client: Socket) {
-
     for (const [userId, sockets] of this.onlineUsers.entries()) {
       sockets.delete(client.id);
 
@@ -80,35 +66,22 @@ export class ChatGateway
         this.onlineUsers.delete(userId);
       }
     }
-
-
   }
 
   @SubscribeMessage('send_message')
-    async handleMessage(
-
+  async handleMessage(
     @ConnectedSocket() client: Socket,
     @MessageBody() dto: SendMessageDto,
   ) {
-     const senderId = client.data.userId;
+    const senderId = client.data.userId;
 
-    const savedMessage = await this.chatService.sendMessage(
-      senderId,
-      dto,
-    );
+    const savedMessage = await this.chatService.sendMessage(senderId, dto);
 
-    const receiverSockets = this.onlineUsers.get(
-      dto.receiverId,
-    );
+    const receiverSockets = this.onlineUsers.get(dto.receiverId);
 
     if (receiverSockets) {
       receiverSockets.forEach((socketId) => {
-        this.server
-          .to(socketId)
-          .emit(
-            'receive_message',
-            savedMessage,
-          );
+        this.server.to(socketId).emit('receive_message', savedMessage);
       });
     }
 
@@ -118,6 +91,5 @@ export class ChatGateway
     };
   }
 }
-
 
 // 18a28d79-2583-4e37-b7b4-1a84bc1c2cf9

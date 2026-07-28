@@ -6,7 +6,7 @@ import { ConversationMemberEntity } from './entity/conversation-member.entity';
 import { MessageEntity } from './entity/message.entity';
 import { ConversationEntity } from './entity/Conversation.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
-import { JwtModule, JwtService } from '@nestjs/jwt';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports:[TypeOrmModule.forFeature([ConversationMemberEntity,
