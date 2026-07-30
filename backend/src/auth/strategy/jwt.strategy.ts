@@ -21,6 +21,9 @@ export class JwtStrategy extends PassportStrategy(Strategy, "jwt") {
   }
 }
 
+
+
+// //postman
 // import { Injectable } from "@nestjs/common";
 // import { PassportStrategy } from "@nestjs/passport";
 // import { Strategy,ExtractJwt } from "passport-jwt";

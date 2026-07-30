@@ -35,7 +35,7 @@ export class CommentEntity {
     nullable: true,
     onDelete: 'CASCADE',
   })
-  parentComment!: CommentEntity;
+  parentComment!: CommentEntity | null;
 
   // Is comment ke replies
   @OneToMany(() => CommentEntity, (comment) => comment.parentComment)

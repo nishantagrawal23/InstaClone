@@ -10,6 +10,7 @@ type Props = {
 };
 
 const PostCard = ({ post }: Props) => {
+  
   return (
     <div className="mb-8 rounded-lg border border-gray-300 bg-white">
       <PostHeader post={post} />

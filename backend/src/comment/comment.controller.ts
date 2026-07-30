@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { CommentService } from './comment.service';
 
 import { JwtGaurd } from 'src/auth/Jwt.auth.guard';
@@ -10,6 +10,14 @@ import { UpdateCommentDto } from './dto/updateComment.dto';
 export class CommentController {
 
   constructor(private readonly commentService: CommentService) {}
+
+  @Get('/:postId')
+  @UseGuards(JwtGaurd)
+  getComment(
+    @Param('postId') postId:string,@Req() req:Request){
+      const user=req.user  as any 
+      return this.commentService.getAllComment(postId,user.id)
+  }
 
  @Post('/:postId')
  @UseGuards(JwtGaurd)

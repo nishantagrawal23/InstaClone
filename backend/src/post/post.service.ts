@@ -23,20 +23,39 @@ export class PostService {
   ) {}
 
 
-  async getAllPost(){
-    const post= this.postRepository.createQueryBuilder("post")
-    .leftJoin(LikeEntity,"like","like.post.id=post.id")
-    .leftJoin(CommentEntity,"comment","comment.post.id=post.id")
-    .leftJoin(UserEntity,"user","user.id=post.user.id")
-    .select(["post.caption","post.images","post.id","post.createdAt",
-      "user.name","user.username"])
-      .addSelect("COUNT(like.id)","likeCount")
-      .addSelect("COUNT(comment.id)","commentCount")
-      .groupBy("post.id").addGroupBy("post.caption").addGroupBy("user.username").addGroupBy("user.id")
-      .getRawMany()
+ async getAllPost() {
+  const posts = await this.postRepository
+    .createQueryBuilder("post")
 
-      return post;
-  }
+    .leftJoin("post.user", "user")
+
+    .select([
+      "post.id",
+      "post.caption",
+      "post.images",
+      "post.createdAt",
+      "user.name",
+      "user.username",
+    ])
+
+    .addSelect((qb) => {
+      return qb
+        .select("COUNT(*)")
+        .from(LikeEntity, "like")
+        .where("like.post.id = post.id");
+    }, "likeCount")
+
+    .addSelect((qb) => {
+      return qb
+        .select("COUNT(*)")
+        .from(CommentEntity, "comment")
+        .where("comment.post.id = post.id");
+    }, "commentCount")
+
+    .getRawMany();
+
+  return posts;
+}
   async create(
     createPostDto: CreatePostDto,
     files: Express.Multer.File[],

@@ -8,6 +8,6 @@ export const api = createApi({
     credentials: "include",
    
   }),
- tagTypes: ["Posts"],
+ tagTypes: ["Posts", "Comments"],
   endpoints: () => ({}),
 });
