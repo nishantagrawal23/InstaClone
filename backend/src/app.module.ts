@@ -8,6 +8,12 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { MailModule } from './mail/mail.module';
 import { OtpModule } from './otp/otp.module';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { PostModule } from './post/post.module';
+import { FollowModule } from './follow/follow.module';
+import { LikeModule } from './like/like.module';
+import { CommentModule } from './comment/comment.module';
+import { ChatModule } from './chat/chat.module';
 
 
 @Module({
@@ -38,6 +44,18 @@ import { OtpModule } from './otp/otp.module';
     MailModule,
 
     OtpModule,
+
+    CloudinaryModule,
+
+    PostModule,
+
+    FollowModule,
+
+    LikeModule,
+
+    CommentModule,
+
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [AppService],

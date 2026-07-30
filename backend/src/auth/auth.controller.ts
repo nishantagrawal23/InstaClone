@@ -1,8 +1,8 @@
-import { Controller, Post, Body, Res,  } from '@nestjs/common';
+import { Controller, Post, Body, Res, Req  } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/Register.dto';
 import { VerifyOtpDto } from 'src/otp/dto/verifyOtp.dto';
-import { type   Response } from 'express';
+import type { Request, Response } from 'express';
 import { LoginDto } from './dto/login.dto';
 
 @Controller('auth')
@@ -11,6 +11,7 @@ export class AuthController {
 
  @Post('register')
 register(@Body() dto: RegisterDto) {
+  console.log(dto)
   return this.authService.create(dto);
 }
 
@@ -39,6 +40,14 @@ async login(
     user: result.user,
   };
 }
+
+@Post('refresh')
+refresh(
+  @Req() req: Request,
+) {
+  return this.authService.refresh(req);
+}
+
 
 
 }
