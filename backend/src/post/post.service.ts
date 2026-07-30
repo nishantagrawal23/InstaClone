@@ -7,6 +7,8 @@ import { PostEntity } from './entities/post.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { CreatePostDto } from './dto/createPost.dto';
+import { LikeEntity } from 'src/like/entity/like.entity';
+import { CommentEntity } from 'src/comment/entity/comment.entity';
 
 @Injectable()
 export class PostService {
@@ -20,6 +22,21 @@ export class PostService {
     private readonly cloudinaryService: CloudinaryService,
   ) {}
 
+
+  async getAllPost(){
+    const post= this.postRepository.createQueryBuilder("post")
+    .leftJoin(LikeEntity,"like","like.post.id=post.id")
+    .leftJoin(CommentEntity,"comment","comment.post.id=post.id")
+    .leftJoin(UserEntity,"user","user.id=post.user.id")
+    .select(["post.caption","post.images","post.id","post.createdAt",
+      "user.name","user.username"])
+      .addSelect("COUNT(like.id)","likeCount")
+      .addSelect("COUNT(comment.id)","commentCount")
+      .groupBy("post.id").addGroupBy("post.caption").addGroupBy("user.username").addGroupBy("user.id")
+      .getRawMany()
+
+      return post;
+  }
   async create(
     createPostDto: CreatePostDto,
     files: Express.Multer.File[],
@@ -60,6 +77,7 @@ for (const file of files) {
   }
 
   async delete(postId: string, userId: string) {
+
   // Find Post
   const post = await this.postRepository.findOne({
     where: { id: postId },
@@ -89,4 +107,6 @@ for (const file of files) {
     message: 'Post deleted successfully',
   };
 }
+
+
 }

@@ -30,13 +30,13 @@ const [registerUser, { isLoading }] = useRegisterMutation();
     const response = await registerUser(dto).unwrap();
     navigate("/verify-otp")
     
-  console.log(response)
+  // console.log(response)
 
   } catch (err) {
     console.log(err);
   }
 };
-
+  
   return (
 
     <Card>

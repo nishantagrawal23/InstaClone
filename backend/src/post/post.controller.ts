@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Post, Req, UploadedFiles, UseGuards, UseInterceptors,Delete } from '@nestjs/common';
+import { Body, Controller, Param, Post, Req, UploadedFiles, UseGuards, UseInterceptors,Delete, Get } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/createPost.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -11,9 +11,11 @@ import { Multer } from 'multer';
 @Controller('post')
 export class PostController {
 
-    constructor(private readonly postservice:PostService){
-
-    }
+    constructor(private readonly postservice:PostService){}
+@Get("getallPost")
+getAllPost(){
+  return this.postservice.getAllPost()
+}
 
 @Post("create")
 @UseGuards(JwtGaurd)

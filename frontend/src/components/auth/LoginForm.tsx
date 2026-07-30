@@ -30,8 +30,8 @@ const LoginForm = () => {
       
       const res = await login(data).unwrap();
 
-    //   console.log("Login Success:", res);
-
+      // console.log("Login Success:", res);
+  window.cookieStore.set("accessToken",res.accessToken)
      
       navigate("/");
     } catch (error) {
