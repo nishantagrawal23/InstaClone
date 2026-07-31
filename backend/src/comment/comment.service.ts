@@ -65,19 +65,16 @@ export class CommentService {
 
     isOwner: comment.user.id === userId,
 
-    replies: comment.replies.map((reply) => ({
-      id: reply.id,
+   replies: comment.replies.map((reply) => ({
+  id: reply.id,
+  text: reply.text,
+  createdAt: reply.createdAt,
+  user_name: reply.user.name,
+  user_username: reply.user.username,
+  isOwner: reply.user.id === userId,
 
-      text: reply.text,
-
-      createdAt: reply.createdAt,
-
-      user_name: reply.user.name,
-
-      user_username: reply.user.username,
-
-      isOwner: reply.user.id === userId,
-    })),
+  replies: [], 
+})),
   }));
 }
 

@@ -26,10 +26,8 @@ export class PostService {
  async getAllPost() {
   const posts = await this.postRepository
     .createQueryBuilder("post")
-
-    .leftJoin("post.user", "user")
-
-    .select([
+     .leftJoin("post.user", "user")
+  .select([
       "post.id",
       "post.caption",
       "post.images",

@@ -11,6 +11,7 @@ type Props = {
 };
 
 const CommentModal = ({ postId, isOpen, onClose }: Props) => {
+  
   const {
     data: comments,
     isLoading,
@@ -50,7 +51,7 @@ const CommentModal = ({ postId, isOpen, onClose }: Props) => {
           )}
 
           {comments && (
-            <CommentList comments={comments} />
+            <CommentList comments={comments} postId={postId} />
           )}
         </div>
 

@@ -1,12 +1,17 @@
+import { useState } from "react";
 import { FiMoreHorizontal } from "react-icons/fi";
 import type { commentInterface } from "../../Types/comment";
-
+import CommentInput from "./CommentInput";
 
 type Props = {
   comment: commentInterface;
+  postId:string
 };
 
-const CommentItem = ({ comment }: Props) => {
+const CommentItem = ({ comment ,postId}: Props) => {
+  console.log(comment.replies);
+  const [showReply, setShowReply] = useState(false);
+
   return (
     <div className="space-y-3">
       {/* Comment */}
@@ -49,20 +54,37 @@ const CommentItem = ({ comment }: Props) => {
               {new Date(comment.createdAt).toLocaleDateString()}
             </span>
 
-            <button className="font-medium hover:text-black">
+            <button
+              onClick={() => setShowReply((prev) => !prev)}
+              className="font-medium hover:text-black"
+            >
               Reply
             </button>
           </div>
+
+          {/* Reply Input */}
+          {showReply && (
+            <div className="mt-3 ml-4">
+              <CommentInput
+                postId={postId}
+                parentCommentId={comment.id}
+                replyingTo={comment.user_username}
+                onCancel={() => setShowReply(false)}
+               
+              />
+            </div>
+          )}
         </div>
       </div>
 
       {/* Replies */}
       {comment.replies.length > 0 && (
-        <div className="ml-12 border-l border-gray-200 pl-4">
+        <div className="ml-12 mt-4 border-l border-gray-200 pl-4">
           {comment.replies.map((reply) => (
             <CommentItem
               key={reply.id}
               comment={reply}
+              postId={postId}
             />
           ))}
         </div>

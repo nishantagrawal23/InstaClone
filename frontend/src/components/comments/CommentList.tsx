@@ -4,10 +4,11 @@ import CommentItem from "./CommentItem";
 
 type Props = {
   comments: commentInterface[];
+  postId:string
 };
 
-const CommentList = ({ comments }: Props) => {
-    console.log(comments)
+const CommentList = ({ comments ,postId}: Props) => {
+   
   if (comments.length === 0) {
     return (
       <p className="py-8 text-center text-gray-500">
@@ -21,7 +22,8 @@ const CommentList = ({ comments }: Props) => {
       {comments.map((comment) => (
         <CommentItem
           key={comment.id}
-          comment={comment}
+          comment={comment} 
+          postId={postId}
         />
       ))}
     </div>

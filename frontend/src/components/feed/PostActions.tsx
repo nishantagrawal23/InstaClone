@@ -20,7 +20,7 @@ const PostActions = ({ post }: Props) => {
 
   const [isCommentOpen, setIsCommentOpen] =
     useState(false);
-
+ 
   const handleLike = async () => {
     try {
       await toggleLike(post.post_id).unwrap();
@@ -60,9 +60,10 @@ const PostActions = ({ post }: Props) => {
           className="cursor-pointer transition hover:scale-110"
         />
       </div>
-
+     
       <CommentModal
         postId={post.post_id}
+        
         isOpen={isCommentOpen}
         onClose={() => setIsCommentOpen(false)}
       />

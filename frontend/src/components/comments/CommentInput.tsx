@@ -4,31 +4,58 @@ import { useCreateCommentMutation } from "../../services/commentApi";
 type Props = {
   postId: string;
   parentCommentId?: string;
+  replyingTo?: string;
+  onCancel?: () => void;
+  
 };
 
-const CommentInput = ({ postId, parentCommentId }: Props) => {
+
+
+const CommentInput = ({ postId, parentCommentId ,replyingTo,onCancel,}: Props) => {
+  
   const [text, setText] = useState("");
 
   const [createComment, { isLoading }] =
     useCreateCommentMutation();
 
-  const handleSubmit = async () => {
+const handleSubmit = async () => {
     if (!text.trim()) return;
 
     try {
-      await createComment({
-        postId,
-        text,
-        parentCommentId,
-      }).unwrap();
+        await createComment({
+            postId,
+            text,
+            parentCommentId,
+        }).unwrap();
 
-      setText("");
+        setText("");
+
+        onCancel?.();
     } catch (error) {
-      console.error(error);
+        console.error(error);
     }
-  };
+};
 
   return (
+  <>
+    {replyingTo && (
+      <div className="mb-2 flex items-center justify-between">
+        <p className="text-sm text-gray-500">
+          Replying to{" "}
+          <span className="font-semibold">
+            @{replyingTo}
+          </span>
+        </p>
+
+        <button
+          onClick={onCancel}
+          className="text-sm text-red-500"
+        >
+          Cancel
+        </button>
+      </div>
+    )}
+
     <div className="flex items-center gap-3">
       <input
         type="text"
@@ -46,7 +73,8 @@ const CommentInput = ({ postId, parentCommentId }: Props) => {
         {isLoading ? "Posting..." : "Post"}
       </button>
     </div>
-  );
+  </>
+);
 };
 
 export default CommentInput;
