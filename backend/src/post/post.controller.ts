@@ -11,7 +11,7 @@ import { Multer } from 'multer';
 @Controller('post')
 export class PostController {
 
-    constructor(private readonly postservice:PostService){}
+constructor(private readonly postservice:PostService){}
 @Get("getallPost")
 getAllPost(){
   return this.postservice.getAllPost()
@@ -23,6 +23,7 @@ getAllPost(){
 createPost(
   @UploadedFiles() files: Express.Multer.File[],
   @Body() createPostDto: CreatePostDto,@Req() req:Request
+  
 ) {  
 
   const user=req.user as any

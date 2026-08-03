@@ -1,9 +1,10 @@
 
-import PostHeader from "./PostHeader";
+
 import PostImage from "./PostImage";
 import PostActions from "./PostActions";
 import PostInfo from "./PostInfo";
 import type { PostInterface } from "../../Types/post";
+import PostHeader from "./PostHeader";
 
 type Props = {
   post: PostInterface;

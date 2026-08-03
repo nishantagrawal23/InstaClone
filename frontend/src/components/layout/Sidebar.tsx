@@ -29,7 +29,8 @@ const Sidebar = () => {
   const isAuthenticated = false;
 
   return (
-    <aside className="sticky top-0 flex h-screen w-64 flex-col border-r border-gray-200 bg-white px-4 py-8">
+    // <aside className="sticky top-0 flex h-screen w-64 flex-col border-r border-gray-200 bg-white px-4 py-8">
+     <aside className="sticky top-0 hidden h-screen w-64 flex-col border-r border-gray-200 bg-white px-4 py-8 md:flex">
       <h1 className="mb-12 px-3 text-3xl font-bold italic">
         Instagram
       </h1>

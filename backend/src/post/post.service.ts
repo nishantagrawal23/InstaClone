@@ -58,28 +58,33 @@ export class PostService {
     createPostDto: CreatePostDto,
     files: Express.Multer.File[],
     userId: string,
-  ) {
+  ) { 
     // 1. Check user exists
     const user = await this.userRepository.findOne({
       where: { id: userId },
-    });
-
+       });
+      
     if (!user) {
       throw new NotFoundException('User not found');
     }
-
+  
    
     // 2. Upload all images to Cloudinary
 const images: { url: string; publicId: string }[] = [];
 
+
+
 for (const file of files) {
   const uploadedImage =
     await this.cloudinaryService.uploadImage(file);
+ 
 
   images.push({
     url: uploadedImage.secure_url,
     publicId: uploadedImage.public_id,
   });
+
+  
 }
 
     // 3. Create post
@@ -88,6 +93,7 @@ for (const file of files) {
       images,
       user,
     });
+    
 
     // 4. Save post
     return await this.postRepository.save(post);
