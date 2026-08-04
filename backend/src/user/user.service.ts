@@ -8,12 +8,15 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entity';
 import { Repository } from 'typeorm';
+import { PostEntity } from 'src/post/entities/post.entity';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+     @InjectRepository(PostEntity)
+  private readonly postRepository: Repository<PostEntity>,
   ) {}
 
   // Create User
@@ -49,6 +52,36 @@ export class UserService {
 
     return user;
   }
+
+  async getProfile(userId: string) {
+  const user = await this.userRepository.findOne({
+    where: { id: userId },
+  });
+
+  if (!user) {
+    throw new NotFoundException('User not found');
+  }
+
+  const posts = await this.postRepository.count({
+    where: {
+      user: {
+        id: userId,
+      },
+    },
+  });
+
+  return {
+    id: user.id,
+    name: user.name,
+    username: user.username,
+    bio: user.bio,
+    profilePicture: user.profilePicture,
+    posts,
+    followers: 0,
+    following: 0,
+    isOwner:user.id==userId?true:false
+  };
+}
 
   // ye to update user ke liye 
   async update(id: string, updateUserDto: UpdateUserDto) {

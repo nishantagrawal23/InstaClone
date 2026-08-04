@@ -9,6 +9,7 @@ import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { CreatePostDto } from './dto/createPost.dto';
 import { LikeEntity } from 'src/like/entity/like.entity';
 import { CommentEntity } from 'src/comment/entity/comment.entity';
+import { FollowEntity } from 'src/follow/entities/follow.entity';
 
 @Injectable()
 export class PostService {
@@ -23,15 +24,16 @@ export class PostService {
   ) {}
 
 
- async getAllPost() {
+async getAllPost(currentUserId: string) {
   const posts = await this.postRepository
     .createQueryBuilder("post")
-     .leftJoin("post.user", "user")
-  .select([
+    .leftJoin("post.user", "user")
+    .select([
       "post.id",
       "post.caption",
       "post.images",
       "post.createdAt",
+      "user.id",
       "user.name",
       "user.username",
     ])
@@ -50,9 +52,97 @@ export class PostService {
         .where("comment.post.id = post.id");
     }, "commentCount")
 
+    .addSelect((qb) => {
+      return qb
+        .select("COUNT(*)")
+        .from(FollowEntity, "follow")
+        .where("follow.follower.id = :currentUserId")
+        .andWhere("follow.following.id = user.id");
+    }, "isFollowing")
+
+    .setParameter("currentUserId", currentUserId)
+
     .getRawMany();
 
-  return posts;
+  return posts.map((post) => ({
+    post_id: post.post_id,
+    post_caption: post.post_caption,
+    post_images: post.post_images,
+    post_createdAt: post.post_createdAt,
+
+    user_id: post.user_id,
+    user_name: post.user_name,
+    user_username: post.user_username,
+
+    likeCount: Number(post.likeCount),
+    commentCount: Number(post.commentCount),
+
+    isFollowing: Number(post.isFollowing) > 0,
+    isOwner: post.user_id === currentUserId,
+  }));
+}
+
+async getMyPosts(currentUserId: string) {
+  const posts = await this.postRepository
+    .createQueryBuilder("post")
+    .leftJoin("post.user", "user")
+    .select([
+      "post.id",
+      "post.caption",
+      "post.images",
+      "post.createdAt",
+      "user.id",
+      "user.name",
+      "user.username",
+    ])
+
+    .addSelect((qb) => {
+      return qb
+        .select("COUNT(*)")
+        .from(LikeEntity, "like")
+        .where("like.post.id = post.id");
+    }, "likeCount")
+
+    .addSelect((qb) => {
+      return qb
+        .select("COUNT(*)")
+        .from(CommentEntity, "comment")
+        .where("comment.post.id = post.id");
+    }, "commentCount")
+
+    .addSelect((qb) => {
+      return qb
+        .select("COUNT(*)")
+        .from(FollowEntity, "follow")
+        .where("follow.follower.id = :currentUserId")
+        .andWhere("follow.following.id = user.id");
+    }, "isFollowing")
+
+    // ⭐ Only this is new
+    .where("user.id = :currentUserId")
+
+    .setParameter("currentUserId", currentUserId)
+
+    .orderBy("post.createdAt", "DESC")
+
+    .getRawMany();
+
+  return posts.map((post) => ({
+    post_id: post.post_id,
+    post_caption: post.post_caption,
+    post_images: post.post_images,
+    post_createdAt: post.post_createdAt,
+
+    user_id: post.user_id,
+    user_name: post.user_name,
+    user_username: post.user_username,
+
+    likeCount: Number(post.likeCount),
+    commentCount: Number(post.commentCount),
+
+    isFollowing: Number(post.isFollowing) > 0,
+    isOwner: true,
+  }));
 }
   async create(
     createPostDto: CreatePostDto,

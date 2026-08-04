@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { FiMoreHorizontal } from "react-icons/fi";
-import type { PostInterface } from "../../Types/post";
-import PostMoreMenu from "./Postmenu";
 
+import PostMoreMenu from "./Postmenu";
+import FollowButton from "../follow/FollowButton";
+import type { PostInterface } from "../../Types/post";
 
 type Props = {
   post: PostInterface;
@@ -26,23 +27,32 @@ const PostHeader = ({ post }: Props) => {
           <p className="text-sm text-[#8A817C]">
             {post.user_name}
           </p>
-        </div>  
+        </div>
       </div>
 
-      <div className="relative">
-        <button onClick={() => setOpenMenu(!openMenu)}>
-          <FiMoreHorizontal
-            size={20}
-            className="cursor-pointer text-[#8A817C] hover:text-[#3F3A36]"
-          />
-        </button>
-
-        {openMenu && (
-          <PostMoreMenu
-            postId={post.post_id}
-            onClose={() => setOpenMenu(false)}
+      <div className="flex items-center gap-3">
+        {!post.isOwner && (
+          <FollowButton
+            userId={post.user_id}
+            isFollowing={post.isFollowing}
           />
         )}
+
+        <div className="relative">
+          <button onClick={() => setOpenMenu(!openMenu)}>
+            <FiMoreHorizontal
+              size={20}
+              className="cursor-pointer text-[#8A817C] hover:text-[#3F3A36]"
+            />
+          </button>
+
+          {openMenu && (
+            <PostMoreMenu
+              postId={post.post_id}
+              onClose={() => setOpenMenu(false)}
+            />
+          )}
+        </div>
       </div>
     </div>
   );

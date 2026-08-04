@@ -24,8 +24,13 @@ export const authApi = api.injectEndpoints({
             method:"post",
             body:data,
         }),
+        
     }),
+    getProfile: builder.query({
+  query: () => "/user/profile",
+  providesTags: ["Profile"],
+}),
   }),
 });
 
-export const { useRegisterMutation,useVerifyMutation ,useLoginMutation} = authApi;
+export const { useRegisterMutation,useVerifyMutation ,useLoginMutation ,useGetProfileQuery} = authApi;

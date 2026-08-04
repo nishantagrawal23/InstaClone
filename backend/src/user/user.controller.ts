@@ -19,12 +19,12 @@ export class UserController {
   findAll() {
     return this.userService.findAll();
   }
-  @UseGuards(JwtGaurd)
-  @Get("byid")
-  findOne(@Req() req: Request) {
-  const user=req.user as any 
-    return this.userService.findOne(user.id);
-  }
+ @UseGuards(JwtGaurd)
+@Get('profile')
+getProfile(@Req() req: Request) {
+  const user = req.user as any;
+  return this.userService.getProfile(user.id);
+}
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {

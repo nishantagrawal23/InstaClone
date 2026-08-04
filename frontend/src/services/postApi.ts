@@ -23,8 +23,12 @@ deletePost: builder.mutation({
   }),
   invalidatesTags: ["Posts"],
 }),
+getMyPosts: builder.query({
+  query: () => "/post/my-posts",
+  providesTags: ["Posts"],
+}),
   }),
   
 });
 
-export const { useGetPostsQuery ,useCreatePostMutation ,useDeletePostMutation} = postApi;
+export const { useGetPostsQuery ,useCreatePostMutation ,useDeletePostMutation,useGetMyPostsQuery} = postApi;

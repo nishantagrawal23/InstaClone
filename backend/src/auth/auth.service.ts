@@ -268,11 +268,14 @@ export class AuthService {
       throw new UnauthorizedException('User not found');
     }
 
-    const isMatched = await bcrypt.compare(
-      refreshToken,
-      user.refreshToken,
-    );
+    if (!user.refreshToken) {
+  throw new UnauthorizedException("Refresh token not found");
+}
 
+const isMatched = await bcrypt.compare(
+  refreshToken,
+  user.refreshToken,
+);
     if (!isMatched) {
       throw new UnauthorizedException(
         'Invalid refresh token',

@@ -12,9 +12,11 @@ import { Multer } from 'multer';
 export class PostController {
 
 constructor(private readonly postservice:PostService){}
+
 @Get("getallPost")
-getAllPost(){
-  return this.postservice.getAllPost()
+@UseGuards(JwtGaurd)
+getAllPost(@Req() req){
+  return this.postservice.getAllPost(req.user.id)
 }
 
 @Post("create")
@@ -28,6 +30,13 @@ createPost(
 
   const user=req.user as any
   return this.postservice.create(createPostDto, files,user.id);
+}
+
+@UseGuards(JwtGaurd)
+@Get("my-posts")
+getMyPosts(@Req() req: Request) {
+  const user = req.user as any;
+  return this.postservice.getMyPosts(user.id);
 }
 
 @UseGuards(JwtGaurd)

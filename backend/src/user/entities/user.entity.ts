@@ -3,7 +3,6 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -22,7 +21,6 @@ export class UserEntity {
   @Column()
   name!: string;
 
-
   @Column({ unique: true })
   username!: string;
 
@@ -35,7 +33,32 @@ export class UserEntity {
   @Column({ default: false })
   isVerified!: boolean;
 
-// this is for posts 
+  // Profile Information
+
+ @Column({
+  type: 'text',
+  nullable: true,
+})
+bio!: string | null;
+
+@Column({
+  type: 'text',
+  nullable: true,
+})
+profilePicture!: string | null;
+
+@Column({
+  type: 'text',
+  nullable: true,
+})
+profilePicturePublicId!: string | null;
+
+@Column({
+  type: 'text',
+  nullable: true,
+})
+refreshToken!: string | null;
+  // Posts
 
   @OneToMany(
     () => PostEntity,
@@ -43,44 +66,53 @@ export class UserEntity {
   )
   posts!: PostEntity[];
 
+  // Followers
+
+  @OneToMany(
+    () => FollowEntity,
+    (follow) => follow.following,
+  )
+  followers!: FollowEntity[];
+
+  @OneToMany(
+    () => FollowEntity,
+    (follow) => follow.follower,
+  )
+  following!: FollowEntity[];
+
+  // Likes
+
+  @OneToMany(
+    () => LikeEntity,
+    (like) => like.user,
+  )
+  likes!: LikeEntity[];
+
+  // Comments
+
+  @OneToMany(
+    () => CommentEntity,
+    (comment) => comment.user,
+  )
+  comments!: CommentEntity[];
+
+  // Chats
+
+  @OneToMany(
+    () => ConversationMemberEntity,
+    (member) => member.user,
+  )
+  conversations!: ConversationMemberEntity[];
+
+  @OneToMany(
+    () => MessageEntity,
+    (message) => message.sender,
+  )
+  messages!: MessageEntity[];
 
   @CreateDateColumn()
   createdAt!: Date;
 
   @UpdateDateColumn()
   updatedAt!: Date;
-
-  @Column({
-    nullable: true,
-  })
-  refreshToken!: string;
-
-
-  // ye ho gya apna follower relaton
-@OneToMany(() => FollowEntity, (follow) => follow.following)
-followers!: FollowEntity[];
-
-@OneToMany(() => FollowEntity, (follow) => follow.follower)
-following!: FollowEntity[];
-
-// for like 
-@OneToMany(() => LikeEntity, (like) => like.user)
-likes!: LikeEntity[];
-
-// for comment 
-
-@OneToMany(() => CommentEntity, (comment) => comment.user)
-comments!: CommentEntity[];
-
-@OneToMany(
-  () => ConversationMemberEntity,
-  (member) => member.user,
-)
-conversations!: ConversationMemberEntity[];
-
-@OneToMany(
-  () => MessageEntity,
-  (message) => message.sender,
-)
-messages!: MessageEntity[];
 }
