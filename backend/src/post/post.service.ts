@@ -94,11 +94,25 @@ async getUserPosts(userId: string) {
       "post.caption",
       "post.images",
       "post.createdAt",
-
+      
       "user.id",
       "user.name",
       "user.username",
     ])
+    .addSelect((qb) => {
+      return qb
+        .select("COUNT(*)")
+        .from(LikeEntity, "like")
+        .where("like.post.id = post.id");
+    }, "likeCount")
+
+    .addSelect((qb) => {
+      return qb
+        .select("COUNT(*)")
+        .from(CommentEntity, "comment")
+        .where("comment.post.id = post.id");
+    }, "commentCount")
+
 
     .where("user.id = :userId", {
       userId,
@@ -117,7 +131,8 @@ async getUserPosts(userId: string) {
     post_caption: post.post_caption,
     post_images: post.post_images,
     post_createdAt: post.post_createdAt,
-
+    likeCount: Number(post.likeCount),
+    commentCount: Number(post.commentCount),
     user_id: post.user_id,
     user_name: post.user_name,
     user_username: post.user_username,

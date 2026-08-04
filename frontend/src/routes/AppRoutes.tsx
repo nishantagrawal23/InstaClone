@@ -10,6 +10,7 @@ import NotificationPage from '../pages/NotificationPage'
 import CreatePostPage from '../pages/CreatePostPage'
 import ProfilePage from '../pages/ProfilePage'
 import OtherProfilePage from '../pages/OtherProfilePage'
+import EditProfilePage from '../pages/EditProfilePage'
 
 
 
@@ -33,6 +34,8 @@ const AppRoutes = () => {
         <Route path="/create" element={<CreatePostPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/profile/:id" element={<OtherProfilePage />}/>
+        <Route path="/edit-profile" element={<EditProfilePage />}
+/>
       </Route>
 
         </Routes>

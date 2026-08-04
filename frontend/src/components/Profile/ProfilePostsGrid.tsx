@@ -9,6 +9,7 @@ type Props = {
 };
 
 const ProfilePostsGrid = ({ posts }: Props) => {
+ 
   if (!posts.length) {
     return <EmptyPosts />;
   }
@@ -19,6 +20,7 @@ const ProfilePostsGrid = ({ posts }: Props) => {
         <ProfilePostCard
           key={index}
           post={post}
+          
         />
       ))}
     </div>

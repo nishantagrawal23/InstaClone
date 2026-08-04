@@ -34,8 +34,16 @@ getUserProfile: builder.query({
   query: (userId: string) => `/user/${userId}`,
   providesTags: ["Profile"],
 }),
+updateProfile: builder.mutation({
+  query: (formData: FormData) => ({
+    url: "/user/profile",
+    method: "PATCH",
+    body: formData,
+  }),
+  invalidatesTags: ["Profile"],
+}),
   }),
   
 });
 
-export const { useRegisterMutation,useVerifyMutation ,useLoginMutation ,useGetProfileQuery,useGetUserProfileQuery} = authApi;
+export const { useRegisterMutation,useVerifyMutation ,useLoginMutation ,useGetProfileQuery,useGetUserProfileQuery,useUpdateProfileMutation} = authApi;

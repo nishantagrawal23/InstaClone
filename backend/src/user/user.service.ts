@@ -154,11 +154,12 @@ async getUserProfile(
     username: user.username,
     bio: user.bio,
     profilePicture: user.profilePicture,
+    
 
     posts,
     followers,
     following,
-
+    
     isFollowing: !!isFollowing,
     isOwner: currentUserId === user.id,
   };
