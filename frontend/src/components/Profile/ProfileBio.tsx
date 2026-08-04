@@ -1,7 +1,7 @@
 type Profile = {
   name: string;
   username: string;
-  bio: string;
+  bio: string | null;
 };
 
 type Props = {

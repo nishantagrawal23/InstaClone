@@ -12,55 +12,88 @@ export class FollowService {
 
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
-  ) {}
+  ) { }
 
 
- async followUser(follower:string,following:string){
-    if(follower === following){
+  async followUser(follower: string, following: string) {
+    if (follower === following) {
       throw new BadRequestException("you cant follow yourself")
+    }
+    const user = await this.userRepository.findOne({
+      where: {
+        id: following,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException("User not found");
     }
 
     const exist = await this.followRepository.findOne({
-      where:{
-        follower:{id:follower},
-        following:{id:following}
+      where: {
+        follower: { id: follower },
+        following: { id: following }
       }
     })
 
-    if(exist){
+    if (exist) {
       throw new ConflictException("already followed")
     }
 
-       const addFollower =  this.followRepository.create({
-        follower:{
-           id:follower
-        },
-        following:{
-          id:following
-        },
-       })
+    const addFollower = this.followRepository.create({
+      follower: {
+        id: follower
+      },
+      following: {
+        id: following
+      },
+    })
 
-       await this.followRepository.save(addFollower) 
-       return {message:'User Follow successfully'}
+    await this.followRepository.save(addFollower)
+
+    const followersCount = await this.followRepository.count({
+      where: {
+        following: {
+          id: following,
+        },
+      },
+    });
+    return {
+      message: "User followed successfully",
+      isFollowing: true,
+      followersCount,
+    }
   }
 
-  async unFollowUser(follower:string,following:string){
-        const findColumn = await this.followRepository.findOne({where:{
-           follower:{
-           id:follower
+  async unFollowUser(follower: string, following: string) {
+    const findColumn = await this.followRepository.findOne({
+      where: {
+        follower: {
+          id: follower
         },
-        following:{
-          id:following
+        following: {
+          id: following
         },
-        }
-        })
-          
-        if(!findColumn){
-          throw new NotFoundException("Follow relationship not found")
-        }
-        
-        await this.followRepository.remove(findColumn) 
-        return {message:'User unfollow successfully'}
+      }
+    })
+
+    if (!findColumn) {
+      throw new NotFoundException("Follow relationship not found")
+    }
+
+    await this.followRepository.remove(findColumn)
+    const followersCount = await this.followRepository.count({
+      where: {
+        following: {
+          id: following,
+        },
+      },
+    });
+    return {
+      message: "User unfollowed successfully",
+      isFollowing: false,
+      followersCount,
+    }
   }
 
 

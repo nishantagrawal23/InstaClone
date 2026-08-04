@@ -9,6 +9,7 @@ import MessagePage from '../pages/MessagePage'
 import NotificationPage from '../pages/NotificationPage'
 import CreatePostPage from '../pages/CreatePostPage'
 import ProfilePage from '../pages/ProfilePage'
+import OtherProfilePage from '../pages/OtherProfilePage'
 
 
 
@@ -31,6 +32,7 @@ const AppRoutes = () => {
         <Route path="/notifications" element={<NotificationPage />} />
         <Route path="/create" element={<CreatePostPage />} />
         <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/profile/:id" element={<OtherProfilePage />}/>
       </Route>
 
         </Routes>

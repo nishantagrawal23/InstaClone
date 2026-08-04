@@ -4,6 +4,7 @@ import { FiMoreHorizontal } from "react-icons/fi";
 import PostMoreMenu from "./Postmenu";
 import FollowButton from "../follow/FollowButton";
 import type { PostInterface } from "../../Types/post";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   post: PostInterface;
@@ -11,10 +12,21 @@ type Props = {
 
 const PostHeader = ({ post }: Props) => {
   const [openMenu, setOpenMenu] = useState(false);
+  const handleProfileClick = () => {
+  if (post.isOwner) {
+    navigate("/profile");
+  } else {
+    navigate(`/profile/${post.user_id}`);
+  }
+};
+const navigate= useNavigate()
 
   return (
     <div className="flex items-center justify-between p-4 relative">
-      <div className="flex items-center gap-3">
+
+      <div onClick={handleProfileClick}
+      className="flex items-center gap-3">
+        
         <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#E8DDD3] text-[#6D5D50] font-semibold">
           {post.user_name.charAt(0).toUpperCase()}
         </div>

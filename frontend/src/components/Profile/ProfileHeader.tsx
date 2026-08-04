@@ -5,12 +5,15 @@ type Profile = {
   id: string;
   name: string;
   username: string;
-  bio: string;
-  avatar: string;
+  bio: string | null;
+  profilePicture: string | null;
+
   posts: number;
   followers: number;
   following: number;
+
   isOwner: boolean;
+  isFollowing: boolean;
 };
 
 type Props = {
@@ -25,9 +28,9 @@ const ProfileHeader = ({ profile }: Props) => {
       <div className="flex flex-col gap-8 md:flex-row md:items-center">
         {/* Avatar */}
         <div className="flex justify-center md:justify-start">
-          {profile.avatar ? (
+          {profile.profilePicture ? (
             <img
-              src={profile.avatar}
+              src={profile.profilePicture}
               alt={profile.name}
               className="h-32 w-32 rounded-full object-cover border"
             />
@@ -49,16 +52,16 @@ const ProfileHeader = ({ profile }: Props) => {
           />
 
           <div>
-            {profile.isOwner ? (
-              <button className="rounded-lg bg-black px-6 py-2 text-sm font-medium text-white transition hover:bg-gray-800">
-                Edit Profile
-              </button>
-            ) : (
-              <button className="rounded-lg bg-blue-500 px-6 py-2 text-sm font-medium text-white transition hover:bg-blue-600">
-                Follow
-              </button>
-            )}
-          </div>
+  {profile.isOwner ? (
+    <button className="rounded-lg bg-black px-6 py-2 text-sm font-medium text-white transition hover:bg-gray-800">
+      Edit Profile
+    </button>
+  ) : (
+    <button className="rounded-lg bg-blue-500 px-6 py-2 text-sm font-medium text-white transition hover:bg-blue-600">
+      {profile.isFollowing ? "Following" : "Follow"}
+    </button>
+  )}
+</div>
         </div>
       </div>
     </div>

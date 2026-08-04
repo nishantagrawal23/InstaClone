@@ -25,10 +25,14 @@ deletePost: builder.mutation({
 }),
 getMyPosts: builder.query({
   query: () => "/post/my-posts",
-  providesTags: ["Posts"],
+  providesTags: ["Posts","Follow"],
+}),
+getUserPosts: builder.query({
+  query: (userId: string) => `/post/user/${userId}`,
+  providesTags: ["Posts","Follow"],
 }),
   }),
   
 });
 
-export const { useGetPostsQuery ,useCreatePostMutation ,useDeletePostMutation,useGetMyPostsQuery} = postApi;
+export const { useGetPostsQuery ,useCreatePostMutation ,useDeletePostMutation,useGetMyPostsQuery , useGetUserPostsQuery} = postApi;

@@ -82,6 +82,47 @@ async getAllPost(currentUserId: string) {
   }));
 }
 
+async getUserPosts(userId: string) {
+
+  const posts = await this.postRepository
+    .createQueryBuilder("post")
+
+    .leftJoin("post.user", "user")
+
+    .select([
+      "post.id",
+      "post.caption",
+      "post.images",
+      "post.createdAt",
+
+      "user.id",
+      "user.name",
+      "user.username",
+    ])
+
+    .where("user.id = :userId", {
+      userId,
+    })
+
+    .orderBy(
+      "post.createdAt",
+      "DESC",
+    )
+
+    .getRawMany();
+
+
+  return posts.map((post) => ({
+    post_id: post.post_id,
+    post_caption: post.post_caption,
+    post_images: post.post_images,
+    post_createdAt: post.post_createdAt,
+
+    user_id: post.user_id,
+    user_name: post.user_name,
+    user_username: post.user_username,
+  }));
+}
 async getMyPosts(currentUserId: string) {
   const posts = await this.postRepository
     .createQueryBuilder("post")

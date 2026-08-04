@@ -30,7 +30,12 @@ export const authApi = api.injectEndpoints({
   query: () => "/user/profile",
   providesTags: ["Profile"],
 }),
+getUserProfile: builder.query({
+  query: (userId: string) => `/user/${userId}`,
+  providesTags: ["Profile"],
+}),
   }),
+  
 });
 
-export const { useRegisterMutation,useVerifyMutation ,useLoginMutation ,useGetProfileQuery} = authApi;
+export const { useRegisterMutation,useVerifyMutation ,useLoginMutation ,useGetProfileQuery,useGetUserProfileQuery} = authApi;

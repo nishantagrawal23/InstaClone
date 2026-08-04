@@ -2,6 +2,7 @@ import { api } from "./api";
 
 export const followApi = api.injectEndpoints({
   endpoints: (builder) => ({
+
     followUser: builder.mutation({
       query: (userId: string) => ({
         url: `/follow/${userId}`,
@@ -17,6 +18,7 @@ export const followApi = api.injectEndpoints({
       }),
       invalidatesTags: ["Posts"],
     }),
+
   }),
 });
 

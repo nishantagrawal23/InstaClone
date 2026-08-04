@@ -32,6 +32,14 @@ createPost(
   return this.postservice.create(createPostDto, files,user.id);
 }
 
+
+@UseGuards(JwtGaurd)
+@Get("user/:id")
+getUserPosts(
+  @Param("id") userId: string,
+) {
+  return this.postservice.getUserPosts(userId);
+}
 @UseGuards(JwtGaurd)
 @Get("my-posts")
 getMyPosts(@Req() req: Request) {
