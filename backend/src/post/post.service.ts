@@ -243,7 +243,7 @@ for (const file of files) {
 
     // 4. Save post
     return await this.postRepository.save(post);
-  }
+}
 
   async delete(postId: string, userId: string) {
 

@@ -31,8 +31,9 @@ const LoginForm = () => {
       const res = await login(data).unwrap();
 
       // console.log("Login Success:", res);
-  window.cookieStore.set("accessToken",res.accessToken)
-     
+  // window.cookieStore.set("accessToken",res.accessToken)
+  
+     localStorage.setItem("accessToken", res.accessToken);
       navigate("/");
     } catch (error) {
       console.error("Login Failed:", error);

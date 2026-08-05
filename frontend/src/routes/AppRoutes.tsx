@@ -4,7 +4,7 @@ import Register from '../pages/auth/Register'
 import VerifyOtpPage from '../pages/auth/verfiyOtp'
 import Layout from '../components/layout/Layout'
 import FeedPage from '../pages/FeedPage'
-import ExplorePage from '../pages/ExplorePage'
+// import ExplorePage from '../pages/ExplorePage'
 import MessagePage from '../pages/MessagePage'
 import NotificationPage from '../pages/NotificationPage'
 import CreatePostPage from '../pages/CreatePostPage'
@@ -28,14 +28,15 @@ const AppRoutes = () => {
      {/* Protected Routes */}
         <Route element={<Layout />}>
         <Route path="/" element={<FeedPage />} />
-        <Route path="/explore" element={<ExplorePage />} />
+        {/* <Route path="/explore" element={<ExplorePage />} /> */}
         <Route path="/messages" element={<MessagePage />} />
         <Route path="/notifications" element={<NotificationPage />} />
         <Route path="/create" element={<CreatePostPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/profile/:id" element={<OtherProfilePage />}/>
-        <Route path="/edit-profile" element={<EditProfilePage />}
-/>
+        <Route path="/edit-profile" element={<EditProfilePage />}/>
+        
+
       </Route>
 
         </Routes>

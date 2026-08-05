@@ -148,6 +148,61 @@ export class ChatService {
 
         return savedMessage;
     }
+async getConversations(userId: string) {
+  const conversations = await this.conversationRepository
+    .createQueryBuilder("conversation")
+    .leftJoinAndSelect("conversation.members", "member")
+    .leftJoinAndSelect("member.user", "user")
+    .where((qb) => {
+      const subQuery = qb
+        .subQuery()
+        .select("cm.conversationId")
+        .from(ConversationMemberEntity, "cm")
+        .where("cm.userId = :userId")
+        .getQuery();
 
+      return `conversation.id IN ${subQuery}`;
+    })
+    .setParameter("userId", userId)
+    .orderBy("conversation.lastMessageAt", "DESC")
+    .getMany();
+
+  return conversations.map((conversation) => {
+    const otherUser = conversation.members.find(
+      (member) => member.user.id !== userId,
+    )?.user;
+
+    return {
+      id: conversation.id,
+      lastMessage: conversation.lastMessage,
+      lastMessageAt: conversation.lastMessageAt,
+
+      user: {
+        id: otherUser?.id,
+        name: otherUser?.name,
+        username: otherUser?.username,
+      },
+    };
+  });
+}
+async getMessages(conversationId: string) {
+  return this.messageRepository
+    .createQueryBuilder("message")
+    .leftJoin("message.sender", "sender")
+    .select([
+      "message.id",
+      "message.message",
+      "message.createdAt",
+      "message.isSeen",
+      "sender.id",
+      "sender.name",
+      "sender.username",
+    ])
+    .where("message.conversationId = :conversationId", {
+      conversationId,
+    })
+    .orderBy("message.createdAt", "ASC")
+    .getMany();
+}
 
 }
