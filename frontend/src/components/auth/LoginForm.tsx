@@ -28,12 +28,15 @@ const LoginForm = () => {
   const onSubmit = async (data: LoginFormData) => {
     try {
       
-      const res = await login(data).unwrap();
+  const res = await login(data).unwrap();
 
-      // console.log("Login Success:", res);
-  // window.cookieStore.set("accessToken",res.accessToken)
-  
-     localStorage.setItem("accessToken", res.accessToken);
+
+
+await window.cookieStore.set("accessToken", res.accessToken);
+
+const cookie = await window.cookieStore.get("accessToken");
+
+
       navigate("/");
     } catch (error) {
       console.error("Login Failed:", error);

@@ -1,13 +1,24 @@
 import { io, Socket } from "socket.io-client";
 
-let socket: Socket;
+let socket: Socket | null = null;
 
-export const connectSocket = () => {
+export const connectSocket = (accessToken: string) => {
+  if (socket) {
+    return socket;
+  }
+
   socket = io("http://localhost:3000", {
-    autoConnect: true,
-    extraHeaders: {
-      auth: localStorage.getItem("accessToken") ?? "",
+    auth: {
+      token: accessToken,
     },
+  });
+
+  socket.on("connect", () => {
+   
+  });
+
+  socket.on("disconnect", () => {
+    socket = null;
   });
 
   return socket;

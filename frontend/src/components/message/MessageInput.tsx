@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { FiImage, FiSend, FiSmile } from "react-icons/fi";
 import type { Conversation } from "../../Types/conversation";
+import { socket } from "../../socket/socket";
 
 interface props{
    conversation:Conversation
@@ -11,13 +12,16 @@ interface props{
 const MessageInput = ({conversation} :props) => {
   const [message, setMessage] = useState("");
 
-  const handleSend = () => {
-    if (!message.trim()) return;
+const handleSend = () => {
+  if (!message.trim()) return;
 
-  
+  socket?.emit("send_message", {
+    receiverId: conversation.user.id,
+    message: message,
+  });
 
-    setMessage("");
-  };
+  setMessage("");
+};
 
   return (
     <div className="border-t p-4">

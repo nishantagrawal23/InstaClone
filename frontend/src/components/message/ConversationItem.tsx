@@ -13,7 +13,7 @@ const ConversationItem = ({
   selected,
   onClick,
 }: Props) => {
-    console.log(conversation)
+    
   return (
     <button
       onClick={onClick}

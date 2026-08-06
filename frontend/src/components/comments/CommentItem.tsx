@@ -9,7 +9,7 @@ type Props = {
 };
 
 const CommentItem = ({ comment ,postId}: Props) => {
-  console.log(comment.replies);
+  
   const [showReply, setShowReply] = useState(false);
 
   return (

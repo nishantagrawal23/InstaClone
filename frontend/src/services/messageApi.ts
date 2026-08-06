@@ -9,7 +9,7 @@ export const messageApi = api.injectEndpoints({
       query: (conversationId) =>
         `/chat/messages/${conversationId}`,
 
-      providesTags: ["Message"],
+      // providesTags: ["Message"],
     }),
   }),
 });
