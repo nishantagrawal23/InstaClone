@@ -6,6 +6,7 @@ import { ConversationMemberEntity } from "./entity/conversation-member.entity";
 import { UserEntity } from "src/user/entities/user.entity";
 import { SendMessageDto } from "./dto/send-message.dto";
 import { MessageEntity } from "./entity/message.entity";
+import { CreateConversationDto } from "./dto/create-conversation.dto";
 
 
 
@@ -157,6 +158,18 @@ export class ChatService {
 
 return message;
     }
+
+
+    async createConversationForUser(
+  senderId: string,
+  dto: CreateConversationDto,
+) {
+    
+  return this.createConversation(senderId, dto.receiverId);
+}
+
+
+
 async getConversations(userId: string) {
   const conversations = await this.conversationRepository
     .createQueryBuilder("conversation")

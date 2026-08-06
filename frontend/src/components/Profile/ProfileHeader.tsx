@@ -1,6 +1,8 @@
 import ProfileStats from "./ProfileStats";
 import ProfileBio from "./ProfileBio";
 import { useNavigate } from "react-router-dom";
+import { useCreateConversationMutation } from "../../services/conversationApi";
+
 
 type Profile = {
   id: string;
@@ -24,6 +26,20 @@ type Props = {
 
 const ProfileHeader = ({ profile }: Props) => {
   const navigate=useNavigate()
+  const [createConversation, { isLoading }] =
+  useCreateConversationMutation();
+
+  const handleMessage = async () => {
+  try {
+    await createConversation({
+      receiverId: profile.id,
+    }).unwrap();
+
+    navigate(`/messages/${profile.id}`);
+  } catch (error) {
+    console.error(error);
+  }
+};
   return (
     <div className="mb-8 border-b border-gray-200 pb-8">
       <div className="flex flex-col gap-8 md:flex-row md:items-center">
@@ -52,18 +68,28 @@ const ProfileHeader = ({ profile }: Props) => {
             following={profile.following}
           />
 
-          <div>
+ <div>
   {profile.isOwner ? (
     <button
-  onClick={() => navigate("/edit-profile")}
-  className="rounded-lg bg-black px-6 py-2 text-sm font-medium text-white hover:bg-gray-800"
->
-  Edit Profile
-</button>
-  ) : (
-    <button className="rounded-lg bg-blue-500 px-6 py-2 text-sm font-medium text-white transition hover:bg-blue-600">
-      {profile.isFollowing ? "Following" : "Follow"}
+      onClick={() => navigate("/edit-profile")}
+      className="rounded-lg bg-black px-6 py-2 text-sm font-medium text-white hover:bg-gray-800"
+    >
+      Edit Profile
     </button>
+  ) : (
+    <div className="flex gap-3">
+      <button className="rounded-lg bg-blue-500 px-6 py-2 text-sm font-medium text-white transition hover:bg-blue-600">
+        {profile.isFollowing ? "Following" : "Follow"}
+      </button>
+
+      <button
+        onClick={handleMessage}
+        disabled={isLoading}
+        className="rounded-lg border border-gray-300 px-6 py-2 text-sm font-medium hover:bg-gray-100"
+      >
+        {isLoading ? "Opening..." : "Message"}
+      </button>
+    </div>
   )}
 </div>
         </div>
