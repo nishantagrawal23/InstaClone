@@ -145,6 +145,7 @@ export class AuthService {
     };
   }
   async generateAccessToken(user: UserEntity) {
+
     return await this.jwtService.signAsync(
       {
         id: user.id,
@@ -206,6 +207,7 @@ export class AuthService {
     // 4. Generate access Tokens calll kr diyaa
     const accessToken = await this.generateAccessToken(user);
    
+
     // generate refresh token call krr diya 
   
     const refreshToken = await this.generateRefreshToken(user);
@@ -261,7 +263,7 @@ export class AuthService {
 
     const user = await this.userRepository.findOne({
       where: {
-        id: payload.sub,
+        id: payload.id,
       },
     });
     if (!user) {

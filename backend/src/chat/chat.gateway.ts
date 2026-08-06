@@ -29,34 +29,35 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   server!: Server;
 
   private onlineUsers = new Map<string, Set<string>>();
+handleConnection(client: Socket) {
+  try {
+   
 
-  handleConnection(client: Socket) {
-    try {
-      const token = client.handshake.headers.auth as string;
+    const token = client.handshake.auth.token;
 
-      if (!token) {
-        return client.disconnect();
-      }
+  
 
-      const payload = this.jwtService.verify(token, {
-        secret: `${process.env.JWT_ACCESS_SECRET}`,
-      });
+    const payload = this.jwtService.verify(token, {
+      secret: process.env.JWT_ACCESS_SECRET,
+    });
 
-      // Without storing userId in client.data, handleMessage() won't know which authenticated
-      // user sent the message.
-      client.data.userId = payload.id;
+  
 
-      const userId = payload.id;
+    client.data.userId = payload.id;
 
-      if (!this.onlineUsers.has(userId)) {
-        this.onlineUsers.set(userId, new Set());
-      }
+    const userId = payload.id;
 
-      this.onlineUsers.get(userId)?.add(client.id);
-    } catch (error) {
-      console.error(error);
+    if (!this.onlineUsers.has(userId)) {
+      this.onlineUsers.set(userId, new Set());
     }
+
+    this.onlineUsers.get(userId)?.add(client.id);
+
+    
+  } catch (err) {
+    console.error(err);
   }
+}
 
   handleDisconnect(client: Socket) {
     for (const [userId, sockets] of this.onlineUsers.entries()) {
@@ -69,27 +70,31 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('send_message')
-  async handleMessage(
-    @ConnectedSocket() client: Socket,
-    @MessageBody() dto: SendMessageDto,
-  ) {
-    const senderId = client.data.userId;
+async handleMessage(
+  @ConnectedSocket() client: Socket,
+  @MessageBody() dto: SendMessageDto,
+) {
+  const senderId = client.data.userId;
 
-    const savedMessage = await this.chatService.sendMessage(senderId, dto);
+  const savedMessage = await this.chatService.sendMessage(senderId, dto);
 
-    const receiverSockets = this.onlineUsers.get(dto.receiverId);
+  // Send to receiver
+  const receiverSockets = this.onlineUsers.get(dto.receiverId);
 
-    if (receiverSockets) {
-      receiverSockets.forEach((socketId) => {
-        this.server.to(socketId).emit('receive_message', savedMessage);
-      });
-    }
-
-    return {
-      success: true,
-      message: savedMessage,
-    };
+  if (receiverSockets) {
+    receiverSockets.forEach((socketId) => {
+      this.server.to(socketId).emit('receive_message', savedMessage);
+    });
   }
+
+  // Send back to sender
+  client.emit('receive_message', savedMessage);
+
+  return {
+    success: true,
+    message: savedMessage,
+  };
+}
 }
 
 

@@ -47,7 +47,7 @@ export class ChatService {
         const receiver = await this.userRepository.findOne({
             where: { id: receiverId },
         });
-        console.log("receiverId:", receiverId)
+       
 
         if (!receiver) {
             throw new NotFoundException('Receiver not found.');
@@ -146,7 +146,16 @@ export class ChatService {
             conversation,
         );
 
-        return savedMessage;
+       const message = await this.messageRepository.findOne({
+  where: {
+    id: savedMessage.id,
+  },
+  relations: {
+    sender: true,
+  },
+});
+
+return message;
     }
 async getConversations(userId: string) {
   const conversations = await this.conversationRepository
