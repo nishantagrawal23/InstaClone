@@ -1,9 +1,10 @@
-import { Controller, Post, Body, Res, Req  } from '@nestjs/common';
+import { Controller, Post, Body, Res, Req, UseGuards  } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/Register.dto';
 import { VerifyOtpDto } from 'src/otp/dto/verifyOtp.dto';
 import type { Request, Response } from 'express';
 import { LoginDto } from './dto/login.dto';
+import { JwtGaurd } from './Jwt.auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -40,6 +41,14 @@ async login(
     user: result.user,
   };
 }
+
+@Post('logout')
+@UseGuards(JwtGaurd)
+async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response,) {
+  const user=req.user as any
+  return this.authService.logout(user.id, res);
+}
+
 
 @Post('refresh')
 refresh(

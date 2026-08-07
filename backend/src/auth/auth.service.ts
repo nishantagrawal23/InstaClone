@@ -16,7 +16,7 @@ import { RegisterDto } from './dto/Register.dto';
 import { VerifyOtpDto } from 'src/otp/dto/verifyOtp.dto';
 import { LoginDto } from './dto/login.dto';
 
-import { Request } from 'express';
+import { type Request ,Response } from 'express';
 
 
 @Injectable()
@@ -234,6 +234,34 @@ export class AuthService {
       user: userData,
     };
   }
+
+async logout(userId: string, res: Response) {
+  const user = await this.userRepository.findOne({
+    where: {
+      id: userId,
+    },
+  });
+
+  if (!user) {
+    throw new BadRequestException('User not found');
+  }
+
+  // Remove refresh token from database
+  user.refreshToken = null;
+
+  await this.userRepository.save(user);
+
+  // Clear refresh token cookie
+  res.clearCookie('refreshToken', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+  });
+
+  return {
+    message: 'Logout successful',
+  };
+}
 
   async refresh(req: Request) {
 

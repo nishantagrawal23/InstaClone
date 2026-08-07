@@ -1,8 +1,7 @@
 import { useState } from "react";
 import {
   FiHome,
-  FiSearch,
-  FiCompass,
+
   FiMessageCircle,
   FiHeart,
   FiPlusSquare,
@@ -26,7 +25,7 @@ const Sidebar = () => {
   const [open, setOpen] = useState(false);
 
   // Later this will come from Redux
-  const isAuthenticated = false;
+  const isAuthenticated = true;
 
   return (
     // <aside className="sticky top-0 flex h-screen w-64 flex-col border-r border-gray-200 bg-white px-4 py-8">
