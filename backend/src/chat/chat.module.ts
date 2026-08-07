@@ -8,6 +8,7 @@ import { ConversationEntity } from './entity/Conversation.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { ChatController } from './chat.controller';
+import { MailService } from 'src/mail/mail.service';
 
 @Module({
   imports:[TypeOrmModule.forFeature([ConversationMemberEntity,
@@ -17,6 +18,6 @@ import { ChatController } from './chat.controller';
       {secret:`${process.env.JWT_ACCESS_SECRET}`}
     )],
      controllers: [ChatController],
-  providers: [ChatGateway, ChatService]
+  providers: [ChatGateway, ChatService,MailService]
 })
 export class ChatModule {}

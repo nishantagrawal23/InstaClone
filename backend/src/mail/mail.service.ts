@@ -33,4 +33,27 @@ export class MailService {
       `,
     });
   }
+
+  async sendMessageNotification(
+  email: string,
+  senderName: string,
+) {
+  await this.transporter.sendMail({
+    from: process.env.EMAIL_USER,
+    to: email,
+    subject: `New message from ${senderName}`,
+
+    html: `
+      <h2>New Message</h2>
+
+      <p>
+        <strong>${senderName}</strong> sent you a new message.
+      </p>
+
+      <p>
+        Open the Instagram  app to view and reply.
+      </p>
+    `,
+  });
+}
 }

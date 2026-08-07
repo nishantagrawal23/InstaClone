@@ -12,6 +12,7 @@ import {
 import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
 import { SendMessageDto } from './dto/send-message.dto';
+import { MailService } from 'src/mail/mail.service';
 
 @WebSocketGateway({
   cors: {
@@ -23,6 +24,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(
     private readonly jwtService: JwtService,
     private readonly chatService: ChatService,
+    private readonly mailService: MailService,
   ) {}
 
   @WebSocketServer()
@@ -82,14 +84,27 @@ async handleMessage(
   const receiverSockets = this.onlineUsers.get(dto.receiverId);
 
   if (receiverSockets) {
-    receiverSockets.forEach((socketId) => {
-      this.server.to(socketId).emit('receive_message', savedMessage);
-    });
-  }
+  // Receiver is online
+  receiverSockets.forEach((socketId) => {
+    this.server.to(socketId).emit(
+      'receive_message',
+      savedMessage,
+    );
+  });
+} else {
+  // Receiver is offline
+  const receiverEmail = await this.chatService.getUserEmail(
+    dto.receiverId,
+  );
 
-  // Send back to sender
-  client.emit('receive_message', savedMessage);
+  await this.mailService.sendMessageNotification(
+    receiverEmail,
+    savedMessage!.sender.name,
+  );
+}
 
+// Send back to sender
+client.emit('receive_message', savedMessage);
   return {
     success: true,
     message: savedMessage,

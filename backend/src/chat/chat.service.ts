@@ -169,7 +169,6 @@ return message;
 }
 
 
-
 async getConversations(userId: string) {
   const conversations = await this.conversationRepository
     .createQueryBuilder("conversation")
@@ -227,4 +226,22 @@ async getMessages(conversationId: string) {
     .getMany();
 }
 
+
+async getUserEmail(userId: string) {
+  const user = await this.userRepository.findOne({
+    where: {
+      id: userId,
+    },
+    select: {
+      id: true,
+      email: true,
+    },
+  });
+
+  if (!user) {
+    throw new NotFoundException("Receiver not found");
+  }
+
+  return user.email;
+}
 }
