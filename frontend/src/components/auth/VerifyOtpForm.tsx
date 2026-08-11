@@ -25,7 +25,7 @@ const VerifyOtpForm = () => {
   const onSubmit = async (data: VerifyOtpFormData) => {
     try {
       const res = await verify(data).unwrap();
-      console.log("OTP Verified:", res);
+    
 
       // Navigate to login page here
       navigate("/login")

@@ -1,8 +1,8 @@
 import { useState } from "react";
+
 import {
   FiHome,
-  FiSearch,
-  FiCompass,
+
   FiMessageCircle,
   FiHeart,
   FiPlusSquare,
@@ -12,10 +12,11 @@ import {
 import { NavLink } from "react-router-dom";
 import MoreMenu from "./MoreMenu";
 
+
 const menuItems = [
   { name: "Home", path: "/", icon: <FiHome size={26} /> },
-  { name: "Search", path: "/search", icon: <FiSearch size={26} /> },
-  { name: "Explore", path: "/explore", icon: <FiCompass size={26} /> },
+  // { name: "Search", path: "/search", icon: <FiSearch size={26} /> },
+  // { name: "Explore", path: "/explore", icon: <FiCompass size={26} /> },
   { name: "Messages", path: "/messages", icon: <FiMessageCircle size={26} /> },
   { name: "Notifications", path: "/notifications", icon: <FiHeart size={26} /> },
   { name: "Create", path: "/create", icon: <FiPlusSquare size={26} /> },
@@ -25,11 +26,11 @@ const menuItems = [
 const Sidebar = () => {
   const [open, setOpen] = useState(false);
 
-  // Later this will come from Redux
-  const isAuthenticated = false;
+
 
   return (
-    <aside className="sticky top-0 flex h-screen w-64 flex-col border-r border-gray-200 bg-white px-4 py-8">
+    // <aside className="sticky top-0 flex h-screen w-64 flex-col border-r border-gray-200 bg-white px-4 py-8">
+     <aside className="sticky top-0 hidden h-screen w-64 flex-col border-r border-gray-200 bg-white px-4 py-8 md:flex">
       <h1 className="mb-12 px-3 text-3xl font-bold italic">
         Instagram
       </h1>
@@ -64,10 +65,7 @@ const Sidebar = () => {
         </button>
 
         {open && (
-          <MoreMenu
-            isAuthenticated={isAuthenticated}
-            onClose={() => setOpen(false)}
-          />
+         <MoreMenu onClose={() => setOpen(false)} />
         )}
       </div>
     </aside>

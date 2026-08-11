@@ -1,8 +1,7 @@
-
-import PostHeader from "./PostHeader";
 import PostImage from "./PostImage";
 import PostActions from "./PostActions";
 import PostInfo from "./PostInfo";
+import PostHeader from "./PostHeader";
 import type { PostInterface } from "../../Types/post";
 
 type Props = {
@@ -10,6 +9,7 @@ type Props = {
 };
 
 const PostCard = ({ post }: Props) => {
+  
   return (
     <div className="mb-8 rounded-lg border border-gray-300 bg-white">
       <PostHeader post={post} />

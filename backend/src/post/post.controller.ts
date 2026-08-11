@@ -11,10 +11,12 @@ import { Multer } from 'multer';
 @Controller('post')
 export class PostController {
 
-    constructor(private readonly postservice:PostService){}
+constructor(private readonly postservice:PostService){}
+
 @Get("getallPost")
-getAllPost(){
-  return this.postservice.getAllPost()
+@UseGuards(JwtGaurd)
+getAllPost(@Req() req){
+  return this.postservice.getAllPost(req.user.id)
 }
 
 @Post("create")
@@ -23,10 +25,26 @@ getAllPost(){
 createPost(
   @UploadedFiles() files: Express.Multer.File[],
   @Body() createPostDto: CreatePostDto,@Req() req:Request
+  
 ) {  
 
   const user=req.user as any
   return this.postservice.create(createPostDto, files,user.id);
+}
+
+
+@UseGuards(JwtGaurd)
+@Get("user/:id")
+getUserPosts(
+  @Param("id") userId: string,
+) {
+  return this.postservice.getUserPosts(userId);
+}
+@UseGuards(JwtGaurd)
+@Get("my-posts")
+getMyPosts(@Req() req: Request) {
+  const user = req.user as any;
+  return this.postservice.getMyPosts(user.id);
 }
 
 @UseGuards(JwtGaurd)

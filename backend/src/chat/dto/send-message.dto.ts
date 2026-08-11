@@ -10,4 +10,4 @@ receiverId!:string;
 @IsString()
 @IsNotEmpty()
 message!:string;
-}
+}   

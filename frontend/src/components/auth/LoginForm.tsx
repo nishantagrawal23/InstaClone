@@ -8,11 +8,10 @@ import Button from "../../components/ui/Button";
 import Divider from "../../components/ui/Divider";
 
 import { useLoginMutation } from "../../services/authApi";
+import type { LoginFormData } from "../../Types/formdata";
+import { useAuth } from "../../context/AuthContext";
 
-type LoginFormData = {
-  email: string;
-  password: string;
-};
+
 
 const LoginForm = () => {
   const {
@@ -20,19 +19,19 @@ const LoginForm = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<LoginFormData>();
-
+  const { setIsAuthenticated } = useAuth();
   const navigate = useNavigate();
 
   const [login, { isLoading }] = useLoginMutation();
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      
+
       const res = await login(data).unwrap();
 
-      // console.log("Login Success:", res);
-  window.cookieStore.set("accessToken",res.accessToken)
-     
+
+      await window.cookieStore.set("accessToken", res.accessToken);
+      setIsAuthenticated(true);
       navigate("/");
     } catch (error) {
       console.error("Login Failed:", error);
@@ -49,7 +48,7 @@ const LoginForm = () => {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
 
           <Input
-          label="email"
+            label="email"
             type="email"
             placeholder="Email"
             {...register("email", {
@@ -58,8 +57,8 @@ const LoginForm = () => {
             error={errors.email?.message}
           />
 
-           <PasswordInput
-           label="password"
+          <PasswordInput
+            label="password"
             placeholder="Password"
             {...register("password", {
               required: "Password is required",

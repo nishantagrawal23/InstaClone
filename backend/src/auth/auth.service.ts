@@ -16,7 +16,7 @@ import { RegisterDto } from './dto/Register.dto';
 import { VerifyOtpDto } from 'src/otp/dto/verifyOtp.dto';
 import { LoginDto } from './dto/login.dto';
 
-import { Request } from 'express';
+import { type Request ,Response } from 'express';
 
 
 @Injectable()
@@ -145,6 +145,7 @@ export class AuthService {
     };
   }
   async generateAccessToken(user: UserEntity) {
+
     return await this.jwtService.signAsync(
       {
         id: user.id,
@@ -152,7 +153,7 @@ export class AuthService {
       },
       {
         secret: process.env.JWT_ACCESS_SECRET,
-        expiresIn: '60m',
+        expiresIn: '6d',
       },
     );
   }
@@ -206,6 +207,7 @@ export class AuthService {
     // 4. Generate access Tokens calll kr diyaa
     const accessToken = await this.generateAccessToken(user);
    
+
     // generate refresh token call krr diya 
   
     const refreshToken = await this.generateRefreshToken(user);
@@ -220,18 +222,48 @@ export class AuthService {
     user.refreshToken = hashedRefreshToken;
 
     await this.userRepository.save(user);
-
+ 
+    
     // 7. Remove Password
     const { password, refreshToken: _, ...userData } = user;
-
+    
     // 8. Return
     return {
       message: 'Login Successful',
       accessToken,
       refreshToken,
       user: userData,
+      
     };
   }
+
+async logout(userId: string, res: Response) {
+  const user = await this.userRepository.findOne({
+    where: {
+      id: userId,
+    },
+  });
+
+  if (!user) {
+    throw new BadRequestException('User not found');
+  }
+
+  // Remove refresh token from database
+  user.refreshToken = null;
+
+  await this.userRepository.save(user);
+
+  // Clear refresh token cookie
+  res.clearCookie('refreshToken', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+  }); 
+
+  return {
+    message: 'Logout successful',
+  };
+}
 
   async refresh(req: Request) {
 
@@ -256,23 +288,23 @@ export class AuthService {
       );
     }
 
-
-
-
     const user = await this.userRepository.findOne({
       where: {
-        id: payload.sub,
+        id: payload.id,
       },
     });
     if (!user) {
       throw new UnauthorizedException('User not found');
     }
 
-    const isMatched = await bcrypt.compare(
-      refreshToken,
-      user.refreshToken,
-    );
+    if (!user.refreshToken) {
+  throw new UnauthorizedException("Refresh token not found");
+}
 
+const isMatched = await bcrypt.compare(
+  refreshToken,
+  user.refreshToken,
+);
     if (!isMatched) {
       throw new UnauthorizedException(
         'Invalid refresh token',

@@ -6,11 +6,12 @@ import { ConversationMemberEntity } from "./entity/conversation-member.entity";
 import { UserEntity } from "src/user/entities/user.entity";
 import { SendMessageDto } from "./dto/send-message.dto";
 import { MessageEntity } from "./entity/message.entity";
+import { CreateConversationDto } from "./dto/create-conversation.dto";
 
 
 
 @Injectable()
-export class ChatService {
+export class ChatService {    
     constructor(
         @InjectRepository(ConversationEntity)
         private readonly conversationRepository: Repository<ConversationEntity>,
@@ -47,7 +48,7 @@ export class ChatService {
         const receiver = await this.userRepository.findOne({
             where: { id: receiverId },
         });
-        console.log("receiverId:", receiverId)
+       
 
         if (!receiver) {
             throw new NotFoundException('Receiver not found.');
@@ -59,7 +60,7 @@ export class ChatService {
 
             .createQueryBuilder('conversation')
            
-            // ye coversation aur conerversationMember table jo connect krr raha isse memberid ke sath conversation id bhi aa rhi hai 
+            // ye coversation aur conerversationMember table ko connect krr raha isse memberid ke sath conversation id bhi aa rhi hai 
             .leftJoin('conversation.members', 'member')
    
 
@@ -146,8 +147,101 @@ export class ChatService {
             conversation,
         );
 
-        return savedMessage;
+       const message = await this.messageRepository.findOne({
+  where: {
+    id: savedMessage.id,
+  },
+  relations: {
+    sender: true,
+  },
+});
+
+return message;
     }
 
 
+    async createConversationForUser(
+  senderId: string,
+  dto: CreateConversationDto,
+) {
+    
+  return this.createConversation(senderId, dto.receiverId);
+}
+
+
+async getConversations(userId: string) {
+  const conversations = await this.conversationRepository
+    .createQueryBuilder("conversation")
+    .leftJoinAndSelect("conversation.members", "member")
+    .leftJoinAndSelect("member.user", "user")
+    .where((qb) => {
+      const subQuery = qb
+        .subQuery()
+        .select("cm.conversationId")
+        .from(ConversationMemberEntity, "cm")
+        .where("cm.userId = :userId")
+        .getQuery();
+
+      return `conversation.id IN ${subQuery}`;
+    })
+    .setParameter("userId", userId)
+    .orderBy("conversation.lastMessageAt", "DESC")
+    .getMany();
+
+  return conversations.map((conversation) => {
+    const otherUser = conversation.members.find(
+      (member) => member.user.id !== userId,
+    )?.user;
+
+    return {
+      id: conversation.id,
+      lastMessage: conversation.lastMessage,
+      lastMessageAt: conversation.lastMessageAt,
+
+      user: {
+        id: otherUser?.id,
+        name: otherUser?.name,
+        username: otherUser?.username,
+      },
+    };
+  });
+}
+async getMessages(conversationId: string) {
+  return this.messageRepository
+    .createQueryBuilder("message")
+    .leftJoin("message.sender", "sender")
+    .select([
+      "message.id",
+      "message.message",
+      "message.createdAt",
+      "message.isSeen",
+      "sender.id",
+      "sender.name",
+      "sender.username",
+    ])
+    .where("message.conversationId = :conversationId", {
+      conversationId,
+    })
+    .orderBy("message.createdAt", "ASC")
+    .getMany();
+}
+
+
+async getUserEmail(userId: string) {
+  const user = await this.userRepository.findOne({
+    where: {
+      id: userId,
+    },
+    select: {
+      id: true,
+      email: true,
+    },
+  });
+
+  if (!user) {
+    throw new NotFoundException("Receiver not found");
+  }
+
+  return user.email;
+}
 }

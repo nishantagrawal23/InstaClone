@@ -1,21 +1,42 @@
-import { Link } from "react-router-dom";
+
+import { Link, useNavigate } from "react-router-dom";
 import { FiLogIn, FiLogOut, FiSettings, FiUserPlus } from "react-icons/fi";
+import { useLogoutMutation } from "../../services/authApi";
+import { useAuth } from "../../context/AuthContext";
 
 type Props = {
-  isAuthenticated: boolean;
+
   onClose: () => void;
 };
 
-const MoreMenu = ({ isAuthenticated, onClose }: Props) => {
-  const handleLogout = () => {
-    console.log("Logout");
+const MoreMenu = ({ onClose }: Props) => {
+  const navigate = useNavigate();
 
-    onClose();
+  const { isAuthenticated, setIsAuthenticated } = useAuth();
+
+  const [logout, { isLoading }] = useLogoutMutation();
+
+  const handleLogout = async () => {
+    try {
+      await logout(undefined).unwrap();
+
+      await window.cookieStore.delete("accessToken");
+
+      setIsAuthenticated(false);
+
+      onClose();
+
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
   };
 
-  return (
-    <div className="absolute bottom-14 left-0 w-56 rounded-xl border bg-white p-2 shadow-lg">
+ 
 
+
+  return (
+    <div>
       {isAuthenticated ? (
         <>
           <Link
@@ -29,10 +50,11 @@ const MoreMenu = ({ isAuthenticated, onClose }: Props) => {
 
           <button
             onClick={handleLogout}
+            disabled={isLoading}
             className="flex w-full items-center gap-3 rounded-lg p-3 hover:bg-gray-100"
           >
             <FiLogOut />
-            Logout
+            {isLoading ? "Logging out..." : "Logout"}
           </button>
         </>
       ) : (
@@ -61,3 +83,4 @@ const MoreMenu = ({ isAuthenticated, onClose }: Props) => {
 };
 
 export default MoreMenu;
+

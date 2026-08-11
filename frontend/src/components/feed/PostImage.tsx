@@ -6,7 +6,7 @@ type Props = {
 
 const PostImage = ({ post }: Props) => {
   const image = post.post_images?.[0];
-
+ 
   return (
     <div className="w-full bg-gray-100">
       {image && (
