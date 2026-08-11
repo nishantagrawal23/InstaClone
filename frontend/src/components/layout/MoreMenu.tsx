@@ -2,15 +2,17 @@
 import { Link, useNavigate } from "react-router-dom";
 import { FiLogIn, FiLogOut, FiSettings, FiUserPlus } from "react-icons/fi";
 import { useLogoutMutation } from "../../services/authApi";
-
+import { useAuth } from "../../context/AuthContext";
 
 type Props = {
-  isAuthenticated: boolean;
+
   onClose: () => void;
 };
 
-const MoreMenu = ({ isAuthenticated, onClose }: Props) => {
+const MoreMenu = ({ onClose }: Props) => {
   const navigate = useNavigate();
+
+  const { isAuthenticated, setIsAuthenticated } = useAuth();
 
   const [logout, { isLoading }] = useLogoutMutation();
 
@@ -20,6 +22,8 @@ const MoreMenu = ({ isAuthenticated, onClose }: Props) => {
 
       await window.cookieStore.delete("accessToken");
 
+      setIsAuthenticated(false);
+
       onClose();
 
       navigate("/login");
@@ -27,6 +31,9 @@ const MoreMenu = ({ isAuthenticated, onClose }: Props) => {
       console.error("Logout failed:", error);
     }
   };
+
+ 
+
 
   return (
     <div>

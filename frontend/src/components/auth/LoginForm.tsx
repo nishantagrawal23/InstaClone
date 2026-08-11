@@ -9,6 +9,7 @@ import Divider from "../../components/ui/Divider";
 
 import { useLoginMutation } from "../../services/authApi";
 import type { LoginFormData } from "../../Types/formdata";
+import { useAuth } from "../../context/AuthContext";
 
 
 
@@ -18,7 +19,7 @@ const LoginForm = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<LoginFormData>();
-
+  const { setIsAuthenticated } = useAuth();
   const navigate = useNavigate();
 
   const [login, { isLoading }] = useLoginMutation();
@@ -27,14 +28,10 @@ const LoginForm = () => {
     try {
 
       const res = await login(data).unwrap();
-   
 
 
       await window.cookieStore.set("accessToken", res.accessToken);
-
-      const cookie = await window.cookieStore.get("accessToken");
-
-
+      setIsAuthenticated(true);
       navigate("/");
     } catch (error) {
       console.error("Login Failed:", error);

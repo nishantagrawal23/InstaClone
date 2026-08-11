@@ -1,4 +1,5 @@
 import { useState } from "react";
+
 import {
   FiHome,
 
@@ -10,6 +11,7 @@ import {
 } from "react-icons/fi";
 import { NavLink } from "react-router-dom";
 import MoreMenu from "./MoreMenu";
+
 
 const menuItems = [
   { name: "Home", path: "/", icon: <FiHome size={26} /> },
@@ -24,8 +26,7 @@ const menuItems = [
 const Sidebar = () => {
   const [open, setOpen] = useState(false);
 
-  // Later this will come from Redux
-  const isAuthenticated = true;
+
 
   return (
     // <aside className="sticky top-0 flex h-screen w-64 flex-col border-r border-gray-200 bg-white px-4 py-8">
@@ -64,10 +65,7 @@ const Sidebar = () => {
         </button>
 
         {open && (
-          <MoreMenu
-            isAuthenticated={isAuthenticated}
-            onClose={() => setOpen(false)}
-          />
+         <MoreMenu onClose={() => setOpen(false)} />
         )}
       </div>
     </aside>
