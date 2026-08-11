@@ -16,7 +16,7 @@ import { RegisterDto } from './dto/Register.dto';
 import { VerifyOtpDto } from 'src/otp/dto/verifyOtp.dto';
 import { LoginDto } from './dto/login.dto';
 
-import { Request } from 'express';
+import { type Request ,Response } from 'express';
 
 
 @Injectable()
@@ -24,12 +24,12 @@ export class AuthService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
-private readonly otpService: OtpService,
-private readonly mailService: MailService,
-     private readonly jwtService: JwtService,
-  ) {}
+    private readonly otpService: OtpService,
+    private readonly mailService: MailService,
+    private readonly jwtService: JwtService,
+  ) { }
 
- async create(createAuthDto: RegisterDto) {
+  async create(createAuthDto: RegisterDto) {
     // Check Email
     const existingEmail = await this.userRepository.findOne({
       where: {
@@ -144,143 +144,177 @@ private readonly mailService: MailService,
       message: 'Email verified successfully.',
     };
   }
-async generateAccessToken(user: UserEntity) {
-  return await this.jwtService.signAsync(
-    {
-      sub: user.id,
-      email: user.email,
-    },
-    {
-      secret: process.env.JWT_ACCESS_SECRET,
-      expiresIn: '15m',
-    },
-  );
-}
+  async generateAccessToken(user: UserEntity) {
 
-async generateRefreshToken(user: UserEntity) {
-  return await this.jwtService.signAsync(
-    {
-      sub: user.id,
-    },
-    {
-      secret: process.env.JWT_REFRESH_SECRET,
-      expiresIn: '7d',
-    },
-  );
-}
+    return await this.jwtService.signAsync(
+      {
+        id: user.id,
+        email: user.email,
+      },
+      {
+        secret: process.env.JWT_ACCESS_SECRET,
+        expiresIn: '6d',
+      },
+    );
+  }
 
-async login(loginDto: LoginDto) {
+  async generateRefreshToken(user: UserEntity) {
+    return await this.jwtService.signAsync(
+      {
+        id: user.id,
+      },
+      {
+        secret: process.env.JWT_REFRESH_SECRET,
+        expiresIn: '7d',
+      },
+    );
+  }
 
-  // 1. Find User
+  async login(loginDto: LoginDto) {
+
+    // 1. Find User
+    const user = await this.userRepository.findOne({
+      where: {
+        email: loginDto.email,
+      },
+    });
+
+    if (!user) {
+      throw new BadRequestException(
+        'Invalid email or password',
+      );
+    }
+
+    // 2. Check Email Verified
+    if (!user.isVerified) {
+      throw new BadRequestException(
+        'Please verify your email first.',
+      );
+    }
+
+    // 3. Compare Password
+    const isPasswordMatched = await bcrypt.compare(
+      loginDto.password,
+      user.password,
+    );
+
+    if (!isPasswordMatched) {
+      throw new BadRequestException(
+        'Invalid email or password',
+      );
+    }
+
+    // 4. Generate access Tokens calll kr diyaa
+    const accessToken = await this.generateAccessToken(user);
+   
+
+    // generate refresh token call krr diya 
+  
+    const refreshToken = await this.generateRefreshToken(user);
+
+    // 5. Hash Refresh Token
+    const hashedRefreshToken = await bcrypt.hash(
+      refreshToken,
+      10,
+    );
+
+    // 6. Save Hashed Refresh Token
+    user.refreshToken = hashedRefreshToken;
+
+    await this.userRepository.save(user);
+ 
+    
+    // 7. Remove Password
+    const { password, refreshToken: _, ...userData } = user;
+    
+    // 8. Return
+    return {
+      message: 'Login Successful',
+      accessToken,
+      refreshToken,
+      user: userData,
+      
+    };
+  }
+
+async logout(userId: string, res: Response) {
   const user = await this.userRepository.findOne({
     where: {
-      email: loginDto.email,
+      id: userId,
     },
   });
 
   if (!user) {
-    throw new BadRequestException(
-      'Invalid email or password',
-    );
+    throw new BadRequestException('User not found');
   }
 
-  // 2. Check Email Verified
-  if (!user.isVerified) {
-    throw new BadRequestException(
-      'Please verify your email first.',
-    );
-  }
-
-  // 3. Compare Password
-  const isPasswordMatched = await bcrypt.compare(
-    loginDto.password,
-    user.password,
-  );
-
-  if (!isPasswordMatched) {
-    throw new BadRequestException(
-      'Invalid email or password',
-    );
-  }
-
-  // 4. Generate Tokens
-  const accessToken = await this.generateAccessToken(user);
-
-  const refreshToken = await this.generateRefreshToken(user);
-
-  // 5. Hash Refresh Token
-  const hashedRefreshToken = await bcrypt.hash(
-    refreshToken,
-    10,
-  );
-
-  // 6. Save Hashed Refresh Token
-  user.refreshToken = hashedRefreshToken;
+  // Remove refresh token from database
+  user.refreshToken = null;
 
   await this.userRepository.save(user);
 
-  // 7. Remove Password
-  const { password, refreshToken: _, ...userData } = user;
+  // Clear refresh token cookie
+  res.clearCookie('refreshToken', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+  }); 
 
-  // 8. Return
   return {
-    message: 'Login Successful',
-    accessToken,
-    refreshToken,
-    user: userData,
+    message: 'Logout successful',
   };
 }
 
-async refresh(req: Request) {
+  async refresh(req: Request) {
 
-const refreshToken = req.cookies.refreshToken;
-if (!refreshToken) {
-  throw new UnauthorizedException(
-    'Refresh token not found',
-  );
-}
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) {
+      throw new UnauthorizedException(
+        'Refresh token not found',
+      );
+    }
 
-let payload;
-try {
-  payload = await this.jwtService.verifyAsync(
-    refreshToken,
-    {
-      secret: process.env.JWT_REFRESH_SECRET,
-    },
-  );
-} catch {
-  throw new UnauthorizedException(
-    'Invalid or expired refresh token',
-  );
-}
+    let payload;
+    try {
+      payload = await this.jwtService.verifyAsync(
+        refreshToken,
+        {
+          secret: process.env.JWT_REFRESH_SECRET,
+        },
+      );
+    } catch {
+      throw new UnauthorizedException(
+        'Invalid or expired refresh token',
+      );
+    }
 
+    const user = await this.userRepository.findOne({
+      where: {
+        id: payload.id,
+      },
+    });
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
 
-
-
-const user = await this.userRepository.findOne({
-  where: {
-    id: payload.sub,
-  },
-});
-if (!user) {
-  throw new UnauthorizedException('User not found');
+    if (!user.refreshToken) {
+  throw new UnauthorizedException("Refresh token not found");
 }
 
 const isMatched = await bcrypt.compare(
   refreshToken,
   user.refreshToken,
 );
-
-if (!isMatched) {
-  throw new UnauthorizedException(
-    'Invalid refresh token',
-  );
-}
-const accessToken =
-await this.generateAccessToken(user);
-return {
-   accessToken
-}
-}
+    if (!isMatched) {
+      throw new UnauthorizedException(
+        'Invalid refresh token',
+      );
+    }
+    const accessToken =
+      await this.generateAccessToken(user);
+    return {
+      accessToken
+    }
+  }
 
 }

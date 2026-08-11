@@ -51,7 +51,7 @@ export class OtpService {
   async verifyOtp(
     email: string,
     otp: string,
-  ): Promise<boolean> {
+  ){
     const otpRecord =
       await this.otpRepository.findOne({
         where: {
