@@ -27,7 +27,7 @@ const [registerUser, { isLoading }] = useRegisterMutation();
   const navigate =useNavigate()
   const onSubmit = async (dto: RegisterFormData) => {
   try {
-    const response = await registerUser(dto).unwrap();
+     await registerUser(dto).unwrap();
     navigate("/verify-otp")
     
 

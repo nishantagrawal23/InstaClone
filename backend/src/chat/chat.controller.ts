@@ -25,7 +25,7 @@ export class ChatController {
   }
 
   @Post("conversation")
-@UseGuards(JwtGaurd)
+ @UseGuards(JwtGaurd)
 createConversation(
   @Req() req,
   @Body() dto: CreateConversationDto,

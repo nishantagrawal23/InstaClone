@@ -11,7 +11,7 @@ import { CreateConversationDto } from "./dto/create-conversation.dto";
 
 
 @Injectable()
-export class ChatService {
+export class ChatService {    
     constructor(
         @InjectRepository(ConversationEntity)
         private readonly conversationRepository: Repository<ConversationEntity>,
@@ -60,7 +60,7 @@ export class ChatService {
 
             .createQueryBuilder('conversation')
            
-            // ye coversation aur conerversationMember table jo connect krr raha isse memberid ke sath conversation id bhi aa rhi hai 
+            // ye coversation aur conerversationMember table ko connect krr raha isse memberid ke sath conversation id bhi aa rhi hai 
             .leftJoin('conversation.members', 'member')
    
 

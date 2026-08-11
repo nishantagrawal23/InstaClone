@@ -8,11 +8,9 @@ import Button from "../../components/ui/Button";
 import Divider from "../../components/ui/Divider";
 
 import { useLoginMutation } from "../../services/authApi";
+import type { LoginFormData } from "../../Types/formdata";
 
-type LoginFormData = {
-  email: string;
-  password: string;
-};
+
 
 const LoginForm = () => {
   const {
@@ -27,14 +25,14 @@ const LoginForm = () => {
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      
-  const res = await login(data).unwrap();
+
+      const res = await login(data).unwrap();
+   
 
 
+      await window.cookieStore.set("accessToken", res.accessToken);
 
-await window.cookieStore.set("accessToken", res.accessToken);
-
-const cookie = await window.cookieStore.get("accessToken");
+      const cookie = await window.cookieStore.get("accessToken");
 
 
       navigate("/");
@@ -53,7 +51,7 @@ const cookie = await window.cookieStore.get("accessToken");
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
 
           <Input
-          label="email"
+            label="email"
             type="email"
             placeholder="Email"
             {...register("email", {
@@ -62,8 +60,8 @@ const cookie = await window.cookieStore.get("accessToken");
             error={errors.email?.message}
           />
 
-           <PasswordInput
-           label="password"
+          <PasswordInput
+            label="password"
             placeholder="Password"
             {...register("password", {
               required: "Password is required",

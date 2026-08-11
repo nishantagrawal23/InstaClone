@@ -2,8 +2,8 @@ import { useState } from "react";
 import {
   FiHeart,
   FiMessageCircle,
-  FiSend,
-  FiBookmark,
+  // FiSend,
+  // FiBookmark,
 } from "react-icons/fi";
 
 import type { PostInterface } from "../../Types/post";
@@ -49,16 +49,16 @@ const PostActions = ({ post }: Props) => {
             className="cursor-pointer transition hover:scale-110"
           />
 
-          <FiSend
+          {/* <FiSend
             size={25}
             className="cursor-pointer transition hover:scale-110"
-          />
+          /> */}
         </div>
 
-        <FiBookmark
+        {/* <FiBookmark
           size={25}
           className="cursor-pointer transition hover:scale-110"
-        />
+        /> */}
       </div>
      
       <CommentModal
@@ -72,3 +72,5 @@ const PostActions = ({ post }: Props) => {
 };
 
 export default PostActions;
+
+

@@ -2,7 +2,7 @@ import LoginForm from "../../components/auth/LoginForm";
 
 
 
-const Register = () => {
+const Login = () => {
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#F7F4F2] px-4">
       <LoginForm/>
@@ -10,4 +10,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default Login;

@@ -153,7 +153,7 @@ export class AuthService {
       },
       {
         secret: process.env.JWT_ACCESS_SECRET,
-        expiresIn: '60m',
+        expiresIn: '6d',
       },
     );
   }
@@ -222,16 +222,18 @@ export class AuthService {
     user.refreshToken = hashedRefreshToken;
 
     await this.userRepository.save(user);
-
+ 
+    
     // 7. Remove Password
     const { password, refreshToken: _, ...userData } = user;
-
+    
     // 8. Return
     return {
       message: 'Login Successful',
       accessToken,
       refreshToken,
       user: userData,
+      
     };
   }
 
@@ -256,7 +258,7 @@ async logout(userId: string, res: Response) {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
-  });
+  }); 
 
   return {
     message: 'Logout successful',
@@ -285,9 +287,6 @@ async logout(userId: string, res: Response) {
         'Invalid or expired refresh token',
       );
     }
-
-
-
 
     const user = await this.userRepository.findOne({
       where: {

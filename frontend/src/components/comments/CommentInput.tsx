@@ -57,7 +57,7 @@ const handleSubmit = async () => {
     )}
 
     <div className="flex items-center gap-3">
-      <input
+      <input     
         type="text"
         placeholder="Add a comment..."
         value={text}

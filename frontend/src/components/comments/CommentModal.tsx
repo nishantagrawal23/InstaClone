@@ -55,7 +55,7 @@ const CommentModal = ({ postId, isOpen, onClose }: Props) => {
           )}
         </div>
 
-        {/* Input */}
+        {/* Input */} 
         <div className="border-t p-4">
           <CommentInput postId={postId} />
         </div>

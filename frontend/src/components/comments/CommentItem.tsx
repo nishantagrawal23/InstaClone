@@ -35,12 +35,12 @@ const CommentItem = ({ comment ,postId}: Props) => {
                 </p>
               </div>
 
-              {comment.isOwner && (
+              {/* {comment.isOwner && (
                 <FiMoreHorizontal
                   size={18}
                   className="cursor-pointer"
                 />
-              )}
+              )} */}
             </div>
 
             <p className="mt-2 text-sm">

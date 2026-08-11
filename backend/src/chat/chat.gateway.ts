@@ -37,13 +37,9 @@ handleConnection(client: Socket) {
 
     const token = client.handshake.auth.token;
 
-  
-
     const payload = this.jwtService.verify(token, {
       secret: process.env.JWT_ACCESS_SECRET,
     });
-
-  
 
     client.data.userId = payload.id;
 

@@ -10,7 +10,7 @@ const FeedPage = () => {
   }
 
   if (error) {
-    return <h1>Something went wrong.</h1>;
+    return <h1>  please login first.</h1>;
   }
 
   return (

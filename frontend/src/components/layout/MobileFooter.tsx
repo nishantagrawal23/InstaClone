@@ -14,7 +14,7 @@ const menuItems = [
     icon: <FiHome size={24} />,
   },
   {
-    path: "/explore",
+    path: "/notifications",
     icon: <FiCompass size={24} />,
   },
   {

@@ -44,7 +44,7 @@ async login(
 
 @Post('logout')
 @UseGuards(JwtGaurd)
-async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response,) {
+async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
   const user=req.user as any
   return this.authService.logout(user.id, res);
 }
