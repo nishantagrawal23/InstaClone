@@ -18,7 +18,7 @@ const menuItems = [
   // { name: "Search", path: "/search", icon: <FiSearch size={26} /> },
   // { name: "Explore", path: "/explore", icon: <FiCompass size={26} /> },
   { name: "Messages", path: "/messages", icon: <FiMessageCircle size={26} /> },
-  { name: "Notifications", path: "/notifications", icon: <FiHeart size={26} /> },
+  // { name: "Notifications", path: "/notifications", icon: <FiHeart size={26} /> },
   { name: "Create", path: "/create", icon: <FiPlusSquare size={26} /> },
   { name: "Profile", path: "/profile", icon: <FiUser size={26} /> },
 ];

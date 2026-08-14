@@ -40,7 +40,6 @@ const MessagePage = () => {
     };
   }, []);
 
-  // Sync URL -> Selected Conversation
   useEffect(() => {
     if (!userId || !conversations) return;
 

@@ -26,11 +26,11 @@ const ChatHeader = ({ conversation }: Props) => {
         </div>
       </div>
 
-      <div className="flex items-center gap-5 text-xl">
+      {/* <div className="flex items-center gap-5 text-xl">
         <FiPhone className="cursor-pointer" />
         <FiVideo className="cursor-pointer" />
         <FiInfo className="cursor-pointer" />
-      </div>
+      </div> */}
     </div>
   );
 };

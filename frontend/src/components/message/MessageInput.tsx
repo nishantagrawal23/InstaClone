@@ -26,10 +26,10 @@ const handleSend = () => {
   return (
     <div className="border-t p-4">
       <div className="flex items-center gap-3 rounded-full border px-4 py-2">
-        <FiSmile
+        {/* <FiSmile
           size={22}
           className="cursor-pointer"
-        />
+        /> */}
 
         <input
           value={message}
@@ -40,10 +40,10 @@ const handleSend = () => {
           className="flex-1 outline-none"
         />
 
-        <FiImage
+        {/* <FiImage
           size={20}
           className="cursor-pointer"
-        />
+        /> */}
 
         <button onClick={handleSend}>
           <FiSend

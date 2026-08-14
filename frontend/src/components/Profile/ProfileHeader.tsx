@@ -78,9 +78,9 @@ const ProfileHeader = ({ profile }: Props) => {
     </button>
   ) : (
     <div className="flex gap-3">
-      <button className="rounded-lg bg-blue-500 px-6 py-2 text-sm font-medium text-white transition hover:bg-blue-600">
+      {/* <button className="rounded-lg bg-blue-500 px-6 py-2 text-sm font-medium text-white transition hover:bg-blue-600">
         {profile.isFollowing ? "Following" : "Follow"}
-      </button>
+      </button> */}
 
       <button
         onClick={handleMessage}

@@ -28,7 +28,7 @@ const PostInfo = ({ post }: Props) => {
         type="button"
         className="text-sm text-gray-500 transition hover:text-gray-700"
       >
-        View all {post.commentCount} comments
+       {post.commentCount} comments
       </button>
 
       {/* Date */}
