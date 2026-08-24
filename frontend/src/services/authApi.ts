@@ -1,0 +1,56 @@
+import { api } from "./api";
+
+
+
+export const authApi = api.injectEndpoints({
+  endpoints: (builder) => ({
+    register: builder.mutation({
+      query: (dto) => ({
+        url: "/auth/register",
+        method: "POST",
+        body: dto,
+      }),
+    }),
+    verify: builder.mutation({
+      query: (dto) => ({
+        url: "auth/verify-otp",
+        method: "post",
+        body: dto,
+      }),
+    }),
+    login: builder.mutation({
+      query: (data) => ({
+        url: "auth/login",
+        method: "post",
+        body: data,
+      }),
+    }),
+    logout: builder.mutation({
+      query: () => ({
+        url: "/auth/logout",
+        method: "post",
+
+      }),
+
+    }),
+    getProfile: builder.query({
+      query: () => "/user/profile",
+      providesTags: ["Profile"],
+    }),
+    getUserProfile: builder.query({
+      query: (userId: string) => `/user/${userId}`,
+      providesTags: ["Profile"],
+    }),
+    updateProfile: builder.mutation({
+      query: (formData: FormData) => ({
+        url: "/user/profile",
+        method: "PATCH",
+        body: formData,
+      }),
+      invalidatesTags: ["Profile"],
+    }),
+  }),
+
+});
+
+export const { useRegisterMutation, useVerifyMutation, useLoginMutation, useGetProfileQuery, useGetUserProfileQuery, useUpdateProfileMutation, useLogoutMutation } = authApi;
