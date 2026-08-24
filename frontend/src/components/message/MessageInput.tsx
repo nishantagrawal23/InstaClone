@@ -1,7 +1,7 @@
 
 
 import { useState } from "react";
-import { FiImage, FiSend, FiSmile } from "react-icons/fi";
+import {FiSend } from "react-icons/fi";
 import type { Conversation } from "../../Types/conversation";
 import { socket } from "../../socket/socket";
 

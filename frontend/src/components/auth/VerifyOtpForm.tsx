@@ -24,7 +24,7 @@ const VerifyOtpForm = () => {
  
   const onSubmit = async (data: VerifyOtpFormData) => {
     try {
-      const res = await verify(data).unwrap();
+      await verify(data).unwrap();
     
 
       // Navigate to login page here

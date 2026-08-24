@@ -1,6 +1,6 @@
 import {
   FiCompass,
-  FiHeart,
+
   FiHome,
   FiMessageCircle,
   FiPlusSquare,

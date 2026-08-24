@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FiMoreHorizontal } from "react-icons/fi";
+
 import type { commentInterface } from "../../Types/comment";
 import CommentInput from "./CommentInput";
 

@@ -1,5 +1,4 @@
 
-import { FiPhone, FiVideo, FiInfo } from "react-icons/fi";
 import type { Conversation } from "../../Types/conversation";
 
 

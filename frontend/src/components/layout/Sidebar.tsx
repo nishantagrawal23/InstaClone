@@ -4,7 +4,7 @@ import {
   FiHome,
 
   FiMessageCircle,
-  FiHeart,
+
   FiPlusSquare,
   FiUser,
   FiMenu,

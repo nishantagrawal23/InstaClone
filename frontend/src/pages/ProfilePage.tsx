@@ -10,7 +10,7 @@ const ProfilePage = () => {
   const { data: profile, isLoading: profileLoading } =
   useGetProfileQuery(undefined);
 
-const { data: posts = [], isLoading: postsLoading } =
+const { data: posts = [] } =
   useGetMyPostsQuery(undefined);
  
   if (profileLoading) {

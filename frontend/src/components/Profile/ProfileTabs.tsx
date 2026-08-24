@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FiGrid, FiBookmark, FiUser } from "react-icons/fi";
+import { FiGrid } from "react-icons/fi";
 
 const tabs = [
   {
