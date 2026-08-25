@@ -5,7 +5,7 @@ WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm cigit remote -v
+RUN npm ci
 
 COPY . .
 
